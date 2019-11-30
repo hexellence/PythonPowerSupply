@@ -3730,80 +3730,6 @@ Source: www.national.com/pf/LM/LM334.html | LM134.pdf</description>
 </deviceset>
 </devicesets>
 </library>
-<library name="mixedSignal">
-<description>Mixed Signal parts created by Hexellence Software</description>
-<packages>
-<package name="DIP08">
-<description>&lt;b&gt;Dual In Line Package&lt;/b&gt;</description>
-<pad name="1" x="-3.81" y="-3.81" drill="0.8128" diameter="1.6256" shape="square" rot="R90"/>
-<pad name="2" x="-1.27" y="-3.81" drill="0.8128" diameter="1.6256" rot="R90"/>
-<pad name="7" x="-1.27" y="3.81" drill="0.8128" diameter="1.6256" rot="R90"/>
-<pad name="8" x="-3.81" y="3.81" drill="0.8128" diameter="1.6256" rot="R90"/>
-<pad name="3" x="1.27" y="-3.81" drill="0.8128" diameter="1.6256" rot="R90"/>
-<pad name="4" x="3.81" y="-3.81" drill="0.8128" diameter="1.6256" rot="R90"/>
-<pad name="6" x="1.27" y="3.81" drill="0.8128" diameter="1.6256" rot="R90"/>
-<pad name="5" x="3.81" y="3.81" drill="0.8128" diameter="1.6256" rot="R90"/>
-<wire x1="5.08" y1="2.54" x2="-5.08" y2="2.54" width="0.2032" layer="21"/>
-<wire x1="-5.08" y1="-2.54" x2="5.08" y2="-2.54" width="0.2032" layer="21"/>
-<wire x1="5.08" y1="2.54" x2="5.08" y2="-2.54" width="0.2032" layer="21"/>
-<wire x1="-5.08" y1="2.54" x2="-5.08" y2="1.016" width="0.2032" layer="21"/>
-<wire x1="-5.08" y1="-2.54" x2="-5.08" y2="-1.016" width="0.2032" layer="21"/>
-<wire x1="-5.08" y1="-1.016" x2="-5.08" y2="1.016" width="0.2032" layer="21" curve="180"/>
-<text x="-5.715" y="0" size="0.6096" layer="25" font="vector" ratio="20" rot="R90" align="bottom-center">&gt;NAME</text>
-<text x="6.35" y="0" size="0.6096" layer="27" font="vector" ratio="20" rot="R90" align="bottom-center">&gt;VALUE</text>
-<polygon width="0.127" layer="21">
-<vertex x="-6.19125" y="-3.175" curve="-90"/>
-<vertex x="-5.715" y="-2.69875" curve="-90"/>
-<vertex x="-5.23875" y="-3.175" curve="-90"/>
-<vertex x="-5.715" y="-3.65125" curve="-90"/>
-</polygon>
-</package>
-</packages>
-<symbols>
-<symbol name="MCP4821">
-<wire x1="-7.62" y1="10.16" x2="-7.62" y2="-10.16" width="0.254" layer="94"/>
-<wire x1="-7.62" y1="-10.16" x2="7.62" y2="-10.16" width="0.254" layer="94"/>
-<wire x1="7.62" y1="-10.16" x2="7.62" y2="10.16" width="0.254" layer="94"/>
-<wire x1="7.62" y1="10.16" x2="-7.62" y2="10.16" width="0.254" layer="94"/>
-<text x="-7.62" y="11.43" size="1.778" layer="95">&gt;NAME</text>
-<text x="-7.62" y="-12.7" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="SDI" x="-10.16" y="7.62" length="short" direction="in"/>
-<pin name="VOUT" x="10.16" y="0" length="short" direction="out" rot="R180"/>
-<pin name="SCLK" x="-10.16" y="2.54" length="short" direction="in"/>
-<pin name="CS" x="-10.16" y="-7.62" length="short" direction="in" function="dot"/>
-<pin name="VDD" x="10.16" y="7.62" length="short" direction="pwr" rot="R180"/>
-<pin name="VSS" x="10.16" y="-7.62" length="short" direction="pwr" rot="R180"/>
-<pin name="LDAC" x="10.16" y="-5.08" length="short" direction="in" function="dot" rot="R180"/>
-<pin name="SHDN" x="10.16" y="5.08" length="short" direction="in" function="dot" rot="R180"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="MCP4821P" prefix="IC">
-<description>12-Bit Voltage Output Digital-to-Analog Converter
-with Internal VREF and SPI Interface</description>
-<gates>
-<gate name="G$1" symbol="MCP4821" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="DIP08">
-<connects>
-<connect gate="G$1" pin="CS" pad="2"/>
-<connect gate="G$1" pin="LDAC" pad="5"/>
-<connect gate="G$1" pin="SCLK" pad="3"/>
-<connect gate="G$1" pin="SDI" pad="4"/>
-<connect gate="G$1" pin="SHDN" pad="6"/>
-<connect gate="G$1" pin="VDD" pad="1"/>
-<connect gate="G$1" pin="VOUT" pad="8"/>
-<connect gate="G$1" pin="VSS" pad="7"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 <library name="LinearRegulators">
 <description>Regulators Library prepared by Hexellence Software</description>
 <packages>
@@ -6883,6 +6809,80 @@ Source: www.kingbright.com</description>
 </deviceset>
 </devicesets>
 </library>
+<library name="mixedSignal">
+<description>Mixed Signal parts created by Hexellence Software</description>
+<packages>
+<package name="DIP08">
+<description>&lt;b&gt;Dual In Line Package&lt;/b&gt;</description>
+<pad name="1" x="-3.81" y="-3.81" drill="0.8128" diameter="1.6256" shape="square" rot="R90"/>
+<pad name="2" x="-1.27" y="-3.81" drill="0.8128" diameter="1.6256" rot="R90"/>
+<pad name="7" x="-1.27" y="3.81" drill="0.8128" diameter="1.6256" rot="R90"/>
+<pad name="8" x="-3.81" y="3.81" drill="0.8128" diameter="1.6256" rot="R90"/>
+<pad name="3" x="1.27" y="-3.81" drill="0.8128" diameter="1.6256" rot="R90"/>
+<pad name="4" x="3.81" y="-3.81" drill="0.8128" diameter="1.6256" rot="R90"/>
+<pad name="6" x="1.27" y="3.81" drill="0.8128" diameter="1.6256" rot="R90"/>
+<pad name="5" x="3.81" y="3.81" drill="0.8128" diameter="1.6256" rot="R90"/>
+<wire x1="5.08" y1="2.54" x2="-5.08" y2="2.54" width="0.2032" layer="21"/>
+<wire x1="-5.08" y1="-2.54" x2="5.08" y2="-2.54" width="0.2032" layer="21"/>
+<wire x1="5.08" y1="2.54" x2="5.08" y2="-2.54" width="0.2032" layer="21"/>
+<wire x1="-5.08" y1="2.54" x2="-5.08" y2="1.016" width="0.2032" layer="21"/>
+<wire x1="-5.08" y1="-2.54" x2="-5.08" y2="-1.016" width="0.2032" layer="21"/>
+<wire x1="-5.08" y1="-1.016" x2="-5.08" y2="1.016" width="0.2032" layer="21" curve="180"/>
+<text x="-5.715" y="0" size="0.6096" layer="25" font="vector" ratio="20" rot="R90" align="bottom-center">&gt;NAME</text>
+<text x="6.35" y="0" size="0.6096" layer="27" font="vector" ratio="20" rot="R90" align="bottom-center">&gt;VALUE</text>
+<polygon width="0.127" layer="21">
+<vertex x="-6.19125" y="-3.175" curve="-90"/>
+<vertex x="-5.715" y="-2.69875" curve="-90"/>
+<vertex x="-5.23875" y="-3.175" curve="-90"/>
+<vertex x="-5.715" y="-3.65125" curve="-90"/>
+</polygon>
+</package>
+</packages>
+<symbols>
+<symbol name="MCP4821">
+<wire x1="-7.62" y1="10.16" x2="-7.62" y2="-10.16" width="0.254" layer="94"/>
+<wire x1="-7.62" y1="-10.16" x2="7.62" y2="-10.16" width="0.254" layer="94"/>
+<wire x1="7.62" y1="-10.16" x2="7.62" y2="10.16" width="0.254" layer="94"/>
+<wire x1="7.62" y1="10.16" x2="-7.62" y2="10.16" width="0.254" layer="94"/>
+<text x="-7.62" y="11.43" size="1.778" layer="95">&gt;NAME</text>
+<text x="-7.62" y="-12.7" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="SDI" x="-10.16" y="7.62" length="short" direction="in"/>
+<pin name="VOUT" x="10.16" y="0" length="short" direction="out" rot="R180"/>
+<pin name="SCLK" x="-10.16" y="2.54" length="short" direction="in"/>
+<pin name="CS" x="-10.16" y="-7.62" length="short" direction="in" function="dot"/>
+<pin name="VDD" x="10.16" y="7.62" length="short" direction="pwr" rot="R180"/>
+<pin name="VSS" x="10.16" y="-7.62" length="short" direction="pwr" rot="R180"/>
+<pin name="LDAC" x="10.16" y="-5.08" length="short" direction="in" function="dot" rot="R180"/>
+<pin name="SHDN" x="10.16" y="5.08" length="short" direction="in" function="dot" rot="R180"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="MCP4821P" prefix="IC">
+<description>12-Bit Voltage Output Digital-to-Analog Converter
+with Internal VREF and SPI Interface</description>
+<gates>
+<gate name="G$1" symbol="MCP4821" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="DIP08">
+<connects>
+<connect gate="G$1" pin="CS" pad="2"/>
+<connect gate="G$1" pin="LDAC" pad="5"/>
+<connect gate="G$1" pin="SCLK" pad="3"/>
+<connect gate="G$1" pin="SDI" pad="4"/>
+<connect gate="G$1" pin="SHDN" pad="6"/>
+<connect gate="G$1" pin="VDD" pad="1"/>
+<connect gate="G$1" pin="VOUT" pad="8"/>
+<connect gate="G$1" pin="VSS" pad="7"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -6946,7 +6946,6 @@ Source: www.kingbright.com</description>
 <part name="SUPPLY3" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
 <part name="SUPPLY4" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
 <part name="SUPPLY5" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
-<part name="IC4" library="mixedSignal" deviceset="MCP4821P" device=""/>
 <part name="SUPPLY6" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
 <part name="SUPPLY7" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
 <part name="SUPPLY8" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
@@ -6962,11 +6961,15 @@ Source: www.kingbright.com</description>
 <part name="SUPPLY10" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
 <part name="SUPPLY11" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
 <part name="P+4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="V+" device=""/>
+<part name="IC3" library="mixedSignal" deviceset="MCP4821P" device=""/>
+<part name="IC4" library="mixedSignal" deviceset="MCP4821P" device=""/>
+<part name="SUPPLY12" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
+<part name="P+5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 </parts>
 <sheets>
 <sheet>
 <plain>
-<text x="86.36" y="-15.24" size="1.778" layer="91" rot="R90" grouprefs="VI_SET">CLIM LED</text>
+<text x="86.36" y="-20.32" size="1.778" layer="91" rot="R90" grouprefs="VI_SET">CLIM LED</text>
 </plain>
 <instances>
 <instance part="U1" gate="G1" x="-86.36" y="93.98" smashed="yes" grouprefs="CURRENTMONDIFFAMP">
@@ -6981,28 +6984,28 @@ Source: www.kingbright.com</description>
 <attribute name="NAME" x="-130.302" y="101.6" size="1.778" layer="95" font="vector" rot="R90"/>
 <attribute name="VALUE" x="-121.92" y="101.6" size="1.778" layer="95" font="vector" rot="R90"/>
 </instance>
-<instance part="U2" gate="G1" x="20.32" y="27.94" smashed="yes" rot="MR180" grouprefs="VI_SET">
-<attribute name="NAME" x="15.24" y="22.098" size="1.778" layer="95" font="vector" rot="MR180"/>
-<attribute name="VALUE" x="15.24" y="35.56" size="1.778" layer="95" font="vector" rot="MR180"/>
+<instance part="U2" gate="G1" x="20.32" y="22.86" smashed="yes" rot="MR180" grouprefs="VI_SET">
+<attribute name="NAME" x="15.24" y="17.018" size="1.778" layer="95" font="vector" rot="MR180"/>
+<attribute name="VALUE" x="15.24" y="30.48" size="1.778" layer="95" font="vector" rot="MR180"/>
 </instance>
-<instance part="U2" gate="G2" x="20.32" y="-20.32" smashed="yes" rot="MR180" grouprefs="VI_SET">
-<attribute name="NAME" x="15.24" y="-26.162" size="1.778" layer="95" font="vector" rot="MR180"/>
-<attribute name="VALUE" x="15.24" y="-12.7" size="1.778" layer="95" font="vector" rot="MR180"/>
+<instance part="U2" gate="G2" x="20.32" y="-25.4" smashed="yes" rot="MR180" grouprefs="VI_SET">
+<attribute name="NAME" x="15.24" y="-31.242" size="1.778" layer="95" font="vector" rot="MR180"/>
+<attribute name="VALUE" x="15.24" y="-17.78" size="1.778" layer="95" font="vector" rot="MR180"/>
 </instance>
-<instance part="U2" gate="G3" x="63.5" y="50.8" smashed="yes" grouprefs="VI_SET">
-<attribute name="NAME" x="60.198" y="45.72" size="1.778" layer="95" font="vector" rot="R90"/>
-<attribute name="VALUE" x="68.58" y="45.72" size="1.778" layer="95" font="vector" rot="R90"/>
+<instance part="U2" gate="G3" x="63.5" y="45.72" smashed="yes" grouprefs="VI_SET">
+<attribute name="NAME" x="60.198" y="40.64" size="1.778" layer="95" font="vector" rot="R90"/>
+<attribute name="VALUE" x="68.58" y="40.64" size="1.778" layer="95" font="vector" rot="R90"/>
 </instance>
 <instance part="IC1" gate="G$1" x="137.16" y="165.1" smashed="yes">
 <attribute name="NAME" x="147.32" y="177.8" size="1.778" layer="95" rot="R180"/>
 </instance>
-<instance part="T1" gate="G1" x="43.18" y="-2.54" smashed="yes" grouprefs="VI_SET">
-<attribute name="NAME" x="48.26" y="0" size="1.778" layer="95"/>
-<attribute name="VALUE" x="48.26" y="-2.54" size="1.778" layer="96"/>
+<instance part="T1" gate="G1" x="43.18" y="-7.62" smashed="yes" grouprefs="VI_SET">
+<attribute name="NAME" x="48.26" y="-5.08" size="1.778" layer="95"/>
+<attribute name="VALUE" x="48.26" y="-7.62" size="1.778" layer="96"/>
 </instance>
-<instance part="T2" gate="G1" x="76.2" y="-20.32" smashed="yes" grouprefs="VI_SET">
-<attribute name="NAME" x="66.04" y="-12.7" size="1.778" layer="95"/>
-<attribute name="VALUE" x="66.04" y="-15.24" size="1.778" layer="96"/>
+<instance part="T2" gate="G1" x="76.2" y="-25.4" smashed="yes" grouprefs="VI_SET">
+<attribute name="NAME" x="66.04" y="-17.78" size="1.778" layer="95"/>
+<attribute name="VALUE" x="66.04" y="-20.32" size="1.778" layer="96"/>
 </instance>
 <instance part="IC2" gate="G$1" x="165.1" y="71.12" smashed="yes" grouprefs="REGULATOR">
 <attribute name="NAME" x="166.37" y="76.2" size="1.778" layer="95"/>
@@ -7081,37 +7084,37 @@ Source: www.kingbright.com</description>
 <attribute name="NAME" x="-30.48" y="80.264" size="1.778" layer="95" font="vector" align="bottom-center"/>
 <attribute name="VALUE" x="-30.48" y="77.216" size="1.778" layer="96" font="vector" align="top-center"/>
 </instance>
-<instance part="R17" gate="G$1" x="38.1" y="27.94" smashed="yes" grouprefs="VI_SET">
-<attribute name="NAME" x="38.1" y="29.464" size="1.778" layer="95" font="vector" align="bottom-center"/>
-<attribute name="VALUE" x="38.1" y="26.416" size="1.778" layer="96" font="vector" align="top-center"/>
+<instance part="R17" gate="G$1" x="38.1" y="22.86" smashed="yes" grouprefs="VI_SET">
+<attribute name="NAME" x="38.1" y="24.384" size="1.778" layer="95" font="vector" align="bottom-center"/>
+<attribute name="VALUE" x="38.1" y="21.336" size="1.778" layer="96" font="vector" align="top-center"/>
 </instance>
-<instance part="R18" gate="G$1" x="10.16" y="0" smashed="yes" rot="R90" grouprefs="VI_SET">
-<attribute name="NAME" x="8.636" y="0" size="1.778" layer="95" font="vector" rot="R90" align="bottom-center"/>
-<attribute name="VALUE" x="11.684" y="0" size="1.778" layer="96" font="vector" rot="R90" align="top-center"/>
+<instance part="R18" gate="G$1" x="10.16" y="-5.08" smashed="yes" rot="R90" grouprefs="VI_SET">
+<attribute name="NAME" x="8.636" y="-5.08" size="1.778" layer="95" font="vector" rot="R90" align="bottom-center"/>
+<attribute name="VALUE" x="11.684" y="-5.08" size="1.778" layer="96" font="vector" rot="R90" align="top-center"/>
 </instance>
-<instance part="R19" gate="G$1" x="20.32" y="7.62" smashed="yes" grouprefs="VI_SET">
-<attribute name="NAME" x="20.32" y="9.144" size="1.778" layer="95" font="vector" align="bottom-center"/>
-<attribute name="VALUE" x="20.32" y="6.096" size="1.778" layer="96" font="vector" align="top-center"/>
+<instance part="R19" gate="G$1" x="20.32" y="2.54" smashed="yes" grouprefs="VI_SET">
+<attribute name="NAME" x="20.32" y="4.064" size="1.778" layer="95" font="vector" align="bottom-center"/>
+<attribute name="VALUE" x="20.32" y="1.016" size="1.778" layer="96" font="vector" align="top-center"/>
 </instance>
-<instance part="R20" gate="G$1" x="20.32" y="15.24" smashed="yes" grouprefs="VI_SET">
-<attribute name="NAME" x="20.32" y="16.764" size="1.778" layer="95" font="vector" align="bottom-center"/>
-<attribute name="VALUE" x="20.32" y="13.716" size="1.778" layer="96" font="vector" align="top-center"/>
+<instance part="R20" gate="G$1" x="20.32" y="10.16" smashed="yes" grouprefs="VI_SET">
+<attribute name="NAME" x="20.32" y="11.684" size="1.778" layer="95" font="vector" align="bottom-center"/>
+<attribute name="VALUE" x="20.32" y="8.636" size="1.778" layer="96" font="vector" align="top-center"/>
 </instance>
-<instance part="R21" gate="G$1" x="55.88" y="27.94" smashed="yes" grouprefs="VI_SET">
-<attribute name="NAME" x="55.88" y="29.464" size="1.778" layer="95" font="vector" align="bottom-center"/>
-<attribute name="VALUE" x="55.88" y="26.416" size="1.778" layer="96" font="vector" align="top-center"/>
+<instance part="R21" gate="G$1" x="55.88" y="22.86" smashed="yes" grouprefs="VI_SET">
+<attribute name="NAME" x="55.88" y="24.384" size="1.778" layer="95" font="vector" align="bottom-center"/>
+<attribute name="VALUE" x="55.88" y="21.336" size="1.778" layer="96" font="vector" align="top-center"/>
 </instance>
-<instance part="R22" gate="G$1" x="35.56" y="-10.16" smashed="yes" rot="R90" grouprefs="VI_SET">
-<attribute name="NAME" x="34.036" y="-10.16" size="1.778" layer="95" font="vector" rot="R90" align="bottom-center"/>
-<attribute name="VALUE" x="37.084" y="-10.16" size="1.778" layer="96" font="vector" rot="R90" align="top-center"/>
+<instance part="R22" gate="G$1" x="35.56" y="-15.24" smashed="yes" rot="R90" grouprefs="VI_SET">
+<attribute name="NAME" x="34.036" y="-15.24" size="1.778" layer="95" font="vector" rot="R90" align="bottom-center"/>
+<attribute name="VALUE" x="37.084" y="-15.24" size="1.778" layer="96" font="vector" rot="R90" align="top-center"/>
 </instance>
-<instance part="R23" gate="G$1" x="63.5" y="-20.32" smashed="yes" grouprefs="VI_SET">
-<attribute name="NAME" x="63.5" y="-18.796" size="1.778" layer="95" font="vector" align="bottom-center"/>
-<attribute name="VALUE" x="63.5" y="-21.844" size="1.778" layer="96" font="vector" align="top-center"/>
+<instance part="R23" gate="G$1" x="63.5" y="-25.4" smashed="yes" grouprefs="VI_SET">
+<attribute name="NAME" x="63.5" y="-23.876" size="1.778" layer="95" font="vector" align="bottom-center"/>
+<attribute name="VALUE" x="63.5" y="-26.924" size="1.778" layer="96" font="vector" align="top-center"/>
 </instance>
-<instance part="R24" gate="G$1" x="78.74" y="5.08" smashed="yes" rot="R90" grouprefs="VI_SET">
-<attribute name="NAME" x="77.216" y="5.08" size="1.778" layer="95" font="vector" rot="R90" align="bottom-center"/>
-<attribute name="VALUE" x="80.264" y="5.08" size="1.778" layer="96" font="vector" rot="R90" align="top-center"/>
+<instance part="R24" gate="G$1" x="78.74" y="0" smashed="yes" rot="R90" grouprefs="VI_SET">
+<attribute name="NAME" x="77.216" y="0" size="1.778" layer="95" font="vector" rot="R90" align="bottom-center"/>
+<attribute name="VALUE" x="80.264" y="0" size="1.778" layer="96" font="vector" rot="R90" align="top-center"/>
 </instance>
 <instance part="R25" gate="G$1" x="170.18" y="5.08" smashed="yes" rot="R90" grouprefs="REGULATOR">
 <attribute name="NAME" x="168.656" y="5.08" size="1.778" layer="95" font="vector" rot="R90" align="bottom-center"/>
@@ -7133,9 +7136,9 @@ Source: www.kingbright.com</description>
 <attribute name="NAME" x="-141.224" y="107.315" size="1.778" layer="95"/>
 <attribute name="VALUE" x="-141.224" y="102.489" size="1.778" layer="96"/>
 </instance>
-<instance part="C5" gate="G$1" x="78.74" y="50.8" smashed="yes" grouprefs="VI_SET">
-<attribute name="NAME" x="79.756" y="51.435" size="1.778" layer="95"/>
-<attribute name="VALUE" x="79.756" y="46.609" size="1.778" layer="96"/>
+<instance part="C5" gate="G$1" x="78.74" y="45.72" smashed="yes" grouprefs="VI_SET">
+<attribute name="NAME" x="79.756" y="46.355" size="1.778" layer="95"/>
+<attribute name="VALUE" x="79.756" y="41.529" size="1.778" layer="96"/>
 </instance>
 <instance part="C6" gate="G$1" x="137.16" y="15.24" smashed="yes">
 <attribute name="NAME" x="138.176" y="15.875" size="1.778" layer="95"/>
@@ -7145,13 +7148,13 @@ Source: www.kingbright.com</description>
 <attribute name="NAME" x="186.436" y="8.255" size="1.778" layer="95"/>
 <attribute name="VALUE" x="186.436" y="3.429" size="1.778" layer="96"/>
 </instance>
-<instance part="C8" gate="G$1" x="129.54" y="-25.4" smashed="yes">
-<attribute name="NAME" x="130.556" y="-24.765" size="1.778" layer="95"/>
-<attribute name="VALUE" x="130.556" y="-29.591" size="1.778" layer="96"/>
+<instance part="C8" gate="G$1" x="-22.86" y="30.48" smashed="yes" rot="R90">
+<attribute name="NAME" x="-23.495" y="31.496" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="-18.669" y="31.496" size="1.778" layer="96" rot="R90"/>
 </instance>
-<instance part="C9" gate="G$1" x="139.7" y="-27.94" smashed="yes">
-<attribute name="NAME" x="140.716" y="-27.305" size="1.778" layer="95"/>
-<attribute name="VALUE" x="140.716" y="-32.131" size="1.778" layer="96"/>
+<instance part="C9" gate="G$1" x="-22.86" y="-22.86" smashed="yes" rot="R90">
+<attribute name="NAME" x="-23.495" y="-21.844" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="-18.669" y="-21.844" size="1.778" layer="96" rot="R90"/>
 </instance>
 <instance part="C1" gate="G$1" x="154.94" y="71.12" smashed="yes" grouprefs="REGULATOR">
 <attribute name="NAME" x="155.956" y="71.755" size="1.778" layer="95"/>
@@ -7169,25 +7172,21 @@ Source: www.kingbright.com</description>
 <instance part="SUPPLY5" gate="GND" x="-127" y="91.44" smashed="yes" grouprefs="CURRENTMONDIFFAMP">
 <attribute name="VALUE" x="-128.905" y="88.265" size="1.778" layer="96"/>
 </instance>
-<instance part="IC4" gate="G$1" x="-106.68" y="12.7" smashed="yes" rot="MR180">
-<attribute name="NAME" x="-114.3" y="1.27" size="1.778" layer="95" rot="MR180"/>
-<attribute name="VALUE" x="-114.3" y="25.4" size="1.778" layer="96" rot="MR180"/>
+<instance part="SUPPLY6" gate="GND" x="10.16" y="-15.24" smashed="yes" grouprefs="VI_SET">
+<attribute name="VALUE" x="8.255" y="-18.415" size="1.778" layer="96"/>
 </instance>
-<instance part="SUPPLY6" gate="GND" x="10.16" y="-10.16" smashed="yes" grouprefs="VI_SET">
-<attribute name="VALUE" x="8.255" y="-13.335" size="1.778" layer="96"/>
+<instance part="SUPPLY7" gate="GND" x="78.74" y="-38.1" smashed="yes" grouprefs="VI_SET">
+<attribute name="VALUE" x="76.835" y="-41.275" size="1.778" layer="96"/>
 </instance>
-<instance part="SUPPLY7" gate="GND" x="78.74" y="-33.02" smashed="yes" grouprefs="VI_SET">
-<attribute name="VALUE" x="76.835" y="-36.195" size="1.778" layer="96"/>
+<instance part="SUPPLY8" gate="GND" x="45.72" y="-40.64" smashed="yes" grouprefs="VI_SET">
+<attribute name="VALUE" x="43.815" y="-43.815" size="1.778" layer="96"/>
 </instance>
-<instance part="SUPPLY8" gate="GND" x="45.72" y="-35.56" smashed="yes" grouprefs="VI_SET">
-<attribute name="VALUE" x="43.815" y="-38.735" size="1.778" layer="96"/>
+<instance part="LED1" gate="G$1" x="78.74" y="-12.7" smashed="yes" grouprefs="VI_SET">
+<attribute name="NAME" x="82.296" y="-17.272" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="84.455" y="-17.272" size="1.778" layer="96" rot="R90"/>
 </instance>
-<instance part="LED1" gate="G$1" x="78.74" y="-7.62" smashed="yes" grouprefs="VI_SET">
-<attribute name="NAME" x="82.296" y="-12.192" size="1.778" layer="95" rot="R90"/>
-<attribute name="VALUE" x="84.455" y="-12.192" size="1.778" layer="96" rot="R90"/>
-</instance>
-<instance part="P+1" gate="1" x="78.74" y="15.24" smashed="yes" grouprefs="VI_SET">
-<attribute name="VALUE" x="76.2" y="10.16" size="1.778" layer="96" rot="R90"/>
+<instance part="P+1" gate="1" x="78.74" y="10.16" smashed="yes" grouprefs="VI_SET">
+<attribute name="VALUE" x="76.2" y="5.08" size="1.778" layer="96" rot="R90"/>
 </instance>
 <instance part="P+2" gate="1" x="-114.3" y="124.46" smashed="yes" grouprefs="CURRENTMONDIFFAMP">
 <attribute name="VALUE" x="-116.84" y="121.92" size="1.778" layer="96" rot="R90"/>
@@ -7210,11 +7209,25 @@ Source: www.kingbright.com</description>
 <instance part="SUPPLY10" gate="GND" x="177.8" y="-10.16" smashed="yes" grouprefs="REGULATOR">
 <attribute name="VALUE" x="175.895" y="-13.335" size="1.778" layer="96"/>
 </instance>
-<instance part="SUPPLY11" gate="GND" x="63.5" y="35.56" smashed="yes" grouprefs="VI_SET">
-<attribute name="VALUE" x="61.595" y="32.385" size="1.778" layer="96"/>
+<instance part="SUPPLY11" gate="GND" x="63.5" y="30.48" smashed="yes" grouprefs="VI_SET">
+<attribute name="VALUE" x="61.595" y="27.305" size="1.778" layer="96"/>
 </instance>
-<instance part="P+4" gate="1" x="63.5" y="68.58" smashed="yes" grouprefs="VI_SET">
-<attribute name="VALUE" x="60.96" y="66.04" size="1.778" layer="96" rot="R90"/>
+<instance part="P+4" gate="1" x="63.5" y="63.5" smashed="yes" grouprefs="VI_SET">
+<attribute name="VALUE" x="60.96" y="60.96" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="IC3" gate="G$1" x="-45.72" y="-27.94" smashed="yes">
+<attribute name="NAME" x="-53.34" y="-16.51" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-53.34" y="-40.64" size="1.778" layer="96"/>
+</instance>
+<instance part="IC4" gate="G$1" x="-45.72" y="25.4" smashed="yes">
+<attribute name="NAME" x="-53.34" y="36.83" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-53.34" y="12.7" size="1.778" layer="96"/>
+</instance>
+<instance part="SUPPLY12" gate="GND" x="-17.78" y="-48.26" smashed="yes">
+<attribute name="VALUE" x="-19.685" y="-51.435" size="1.778" layer="96"/>
+</instance>
+<instance part="P+5" gate="1" x="-30.48" y="38.1" smashed="yes">
+<attribute name="VALUE" x="-33.02" y="33.02" size="1.778" layer="96" rot="R90"/>
 </instance>
 </instances>
 <busses>
@@ -7292,17 +7305,17 @@ Source: www.kingbright.com</description>
 <segment>
 <pinref part="R18" gate="G$1" pin="1"/>
 <pinref part="SUPPLY6" gate="GND" pin="GND"/>
-<wire x1="10.16" y1="-5.08" x2="10.16" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="-10.16" x2="10.16" y2="-12.7" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="T1" gate="G1" pin="E"/>
 <pinref part="SUPPLY8" gate="GND" pin="GND"/>
-<wire x1="45.72" y1="-7.62" x2="45.72" y2="-33.02" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="45.72" y1="-12.7" x2="45.72" y2="-38.1" width="0.1524" layer="91" grouprefs="VI_SET"/>
 </segment>
 <segment>
 <pinref part="T2" gate="G1" pin="E"/>
 <pinref part="SUPPLY7" gate="GND" pin="GND"/>
-<wire x1="78.74" y1="-25.4" x2="78.74" y2="-30.48" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="78.74" y1="-30.48" x2="78.74" y2="-35.56" width="0.1524" layer="91" grouprefs="VI_SET"/>
 </segment>
 <segment>
 <pinref part="SUPPLY2" gate="GND" pin="GND"/>
@@ -7338,13 +7351,37 @@ Source: www.kingbright.com</description>
 </segment>
 <segment>
 <pinref part="C5" gate="G$1" pin="2"/>
-<wire x1="63.5" y1="40.64" x2="78.74" y2="40.64" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<wire x1="78.74" y1="40.64" x2="78.74" y2="45.72" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="63.5" y1="35.56" x2="78.74" y2="35.56" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="78.74" y1="35.56" x2="78.74" y2="40.64" width="0.1524" layer="91" grouprefs="VI_SET"/>
 <pinref part="U2" gate="G3" pin="P$V-"/>
-<wire x1="63.5" y1="43.18" x2="63.5" y2="40.64" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="63.5" y1="38.1" x2="63.5" y2="35.56" width="0.1524" layer="91" grouprefs="VI_SET"/>
 <pinref part="SUPPLY11" gate="GND" pin="GND"/>
-<wire x1="63.5" y1="38.1" x2="63.5" y2="40.64" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<junction x="63.5" y="40.64" grouprefs="VI_SET"/>
+<wire x1="63.5" y1="33.02" x2="63.5" y2="35.56" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<junction x="63.5" y="35.56" grouprefs="VI_SET"/>
+</segment>
+<segment>
+<pinref part="C8" gate="G$1" pin="2"/>
+<wire x1="-17.78" y1="30.48" x2="-17.78" y2="20.32" width="0.1524" layer="91"/>
+<pinref part="SUPPLY12" gate="GND" pin="GND"/>
+<pinref part="IC3" gate="G$1" pin="LDAC"/>
+<wire x1="-17.78" y1="20.32" x2="-17.78" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="-17.78" y1="17.78" x2="-17.78" y2="-22.86" width="0.1524" layer="91"/>
+<wire x1="-17.78" y1="-22.86" x2="-17.78" y2="-33.02" width="0.1524" layer="91"/>
+<wire x1="-17.78" y1="-33.02" x2="-17.78" y2="-35.56" width="0.1524" layer="91"/>
+<wire x1="-17.78" y1="-35.56" x2="-17.78" y2="-45.72" width="0.1524" layer="91"/>
+<wire x1="-35.56" y1="-33.02" x2="-17.78" y2="-33.02" width="0.1524" layer="91"/>
+<junction x="-17.78" y="-33.02"/>
+<pinref part="IC3" gate="G$1" pin="VSS"/>
+<wire x1="-35.56" y1="-35.56" x2="-17.78" y2="-35.56" width="0.1524" layer="91"/>
+<junction x="-17.78" y="-35.56"/>
+<pinref part="IC4" gate="G$1" pin="LDAC"/>
+<wire x1="-35.56" y1="20.32" x2="-17.78" y2="20.32" width="0.1524" layer="91"/>
+<junction x="-17.78" y="20.32"/>
+<pinref part="IC4" gate="G$1" pin="VSS"/>
+<wire x1="-35.56" y1="17.78" x2="-17.78" y2="17.78" width="0.1524" layer="91"/>
+<junction x="-17.78" y="17.78"/>
+<pinref part="C9" gate="G$1" pin="2"/>
+<junction x="-17.78" y="-22.86"/>
 </segment>
 </net>
 <net name="N$4" class="0">
@@ -7451,123 +7488,147 @@ Source: www.kingbright.com</description>
 <net name="N$10" class="0">
 <segment>
 <pinref part="C5" gate="G$1" pin="1"/>
-<wire x1="63.5" y1="63.5" x2="78.74" y2="63.5" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<wire x1="78.74" y1="63.5" x2="78.74" y2="53.34" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="63.5" y1="58.42" x2="78.74" y2="58.42" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="78.74" y1="58.42" x2="78.74" y2="48.26" width="0.1524" layer="91" grouprefs="VI_SET"/>
 <pinref part="U2" gate="G3" pin="P$V+"/>
-<wire x1="63.5" y1="58.42" x2="63.5" y2="63.5" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<wire x1="63.5" y1="63.5" x2="63.5" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="63.5" y1="53.34" x2="63.5" y2="58.42" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="63.5" y1="58.42" x2="63.5" y2="60.96" width="0.1524" layer="91"/>
 <pinref part="P+4" gate="1" pin="V+"/>
-<junction x="63.5" y="63.5"/>
+<junction x="63.5" y="58.42"/>
 </segment>
 </net>
 <net name="VADJ" class="0">
 <segment>
 <pinref part="U2" gate="G1" pin="OUT"/>
 <pinref part="R17" gate="G$1" pin="1"/>
-<wire x1="27.94" y1="27.94" x2="30.48" y2="27.94" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="27.94" y1="22.86" x2="30.48" y2="22.86" width="0.1524" layer="91" grouprefs="VI_SET"/>
 <pinref part="R19" gate="G$1" pin="2"/>
-<wire x1="30.48" y1="27.94" x2="33.02" y2="27.94" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<wire x1="25.4" y1="7.62" x2="30.48" y2="7.62" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<wire x1="30.48" y1="7.62" x2="30.48" y2="15.24" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<junction x="30.48" y="27.94" grouprefs="VI_SET"/>
+<wire x1="30.48" y1="22.86" x2="33.02" y2="22.86" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="25.4" y1="2.54" x2="30.48" y2="2.54" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="30.48" y1="2.54" x2="30.48" y2="10.16" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<junction x="30.48" y="22.86" grouprefs="VI_SET"/>
 <pinref part="R20" gate="G$1" pin="2"/>
-<wire x1="30.48" y1="15.24" x2="30.48" y2="27.94" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<wire x1="25.4" y1="15.24" x2="30.48" y2="15.24" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<junction x="30.48" y="15.24" grouprefs="VI_SET"/>
+<wire x1="30.48" y1="10.16" x2="30.48" y2="22.86" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="25.4" y1="10.16" x2="30.48" y2="10.16" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<junction x="30.48" y="10.16" grouprefs="VI_SET"/>
 <pinref part="R21" gate="G$1" pin="2"/>
-<wire x1="60.96" y1="27.94" x2="63.5" y2="27.94" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<wire x1="63.5" y1="27.94" x2="63.5" y2="7.62" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<wire x1="63.5" y1="7.62" x2="30.48" y2="7.62" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<junction x="30.48" y="7.62" grouprefs="VI_SET"/>
-<label x="68.58" y="25.4" size="1.778" layer="95" grouprefs="VI_SET"/>
+<wire x1="60.96" y1="22.86" x2="63.5" y2="22.86" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="63.5" y1="22.86" x2="63.5" y2="2.54" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="63.5" y1="2.54" x2="30.48" y2="2.54" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<junction x="30.48" y="2.54" grouprefs="VI_SET"/>
+<label x="68.58" y="20.32" size="1.778" layer="95" grouprefs="VI_SET"/>
 <pinref part="U$1" gate="G$1" pin="SET"/>
-<wire x1="63.5" y1="27.94" x2="137.16" y2="27.94" width="0.1524" layer="91"/>
-<junction x="63.5" y="27.94"/>
+<wire x1="63.5" y1="22.86" x2="137.16" y2="22.86" width="0.1524" layer="91"/>
+<junction x="63.5" y="22.86"/>
 <pinref part="C6" gate="G$1" pin="1"/>
-<wire x1="137.16" y1="27.94" x2="137.16" y2="86.36" width="0.1524" layer="91"/>
-<wire x1="137.16" y1="17.78" x2="137.16" y2="27.94" width="0.1524" layer="91"/>
-<junction x="137.16" y="27.94"/>
+<wire x1="137.16" y1="22.86" x2="137.16" y2="86.36" width="0.1524" layer="91"/>
+<wire x1="137.16" y1="17.78" x2="137.16" y2="22.86" width="0.1524" layer="91"/>
+<junction x="137.16" y="22.86"/>
 </segment>
 </net>
 <net name="N$13" class="0">
 <segment>
 <pinref part="U2" gate="G1" pin="-IN"/>
-<wire x1="12.7" y1="25.4" x2="10.16" y2="25.4" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<wire x1="10.16" y1="25.4" x2="10.16" y2="15.24" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<wire x1="10.16" y1="15.24" x2="10.16" y2="7.62" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="12.7" y1="20.32" x2="10.16" y2="20.32" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="10.16" y1="20.32" x2="10.16" y2="10.16" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="10.16" y1="10.16" x2="10.16" y2="2.54" width="0.1524" layer="91" grouprefs="VI_SET"/>
 <pinref part="R20" gate="G$1" pin="1"/>
-<wire x1="10.16" y1="7.62" x2="10.16" y2="5.08" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<wire x1="15.24" y1="15.24" x2="10.16" y2="15.24" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<junction x="10.16" y="15.24" grouprefs="VI_SET"/>
+<wire x1="10.16" y1="2.54" x2="10.16" y2="0" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="15.24" y1="10.16" x2="10.16" y2="10.16" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<junction x="10.16" y="10.16" grouprefs="VI_SET"/>
 <pinref part="R18" gate="G$1" pin="2"/>
 <pinref part="R19" gate="G$1" pin="1"/>
-<wire x1="15.24" y1="7.62" x2="10.16" y2="7.62" width="0.1524" layer="91"/>
-<junction x="10.16" y="7.62"/>
+<wire x1="15.24" y1="2.54" x2="10.16" y2="2.54" width="0.1524" layer="91"/>
+<junction x="10.16" y="2.54"/>
 </segment>
 </net>
 <net name="N$8" class="0">
 <segment>
 <pinref part="R17" gate="G$1" pin="2"/>
-<wire x1="43.18" y1="27.94" x2="45.72" y2="27.94" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="43.18" y1="22.86" x2="45.72" y2="22.86" width="0.1524" layer="91" grouprefs="VI_SET"/>
 <pinref part="R21" gate="G$1" pin="1"/>
 <pinref part="T1" gate="G1" pin="C"/>
-<wire x1="45.72" y1="27.94" x2="50.8" y2="27.94" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<wire x1="45.72" y1="2.54" x2="45.72" y2="27.94" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<junction x="45.72" y="27.94" grouprefs="VI_SET"/>
+<wire x1="45.72" y1="22.86" x2="50.8" y2="22.86" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="45.72" y1="-2.54" x2="45.72" y2="22.86" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<junction x="45.72" y="22.86" grouprefs="VI_SET"/>
 </segment>
 </net>
 <net name="N$12" class="0">
 <segment>
 <pinref part="R22" gate="G$1" pin="2"/>
 <pinref part="T1" gate="G1" pin="B"/>
-<wire x1="35.56" y1="-5.08" x2="35.56" y2="-2.54" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<wire x1="35.56" y1="-2.54" x2="40.64" y2="-2.54" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="35.56" y1="-10.16" x2="35.56" y2="-7.62" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="35.56" y1="-7.62" x2="40.64" y2="-7.62" width="0.1524" layer="91" grouprefs="VI_SET"/>
 </segment>
 </net>
 <net name="N$14" class="0">
 <segment>
 <pinref part="U2" gate="G2" pin="OUT"/>
-<wire x1="27.94" y1="-20.32" x2="35.56" y2="-20.32" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="27.94" y1="-25.4" x2="35.56" y2="-25.4" width="0.1524" layer="91" grouprefs="VI_SET"/>
 <pinref part="R22" gate="G$1" pin="1"/>
-<wire x1="35.56" y1="-20.32" x2="35.56" y2="-15.24" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="35.56" y1="-25.4" x2="35.56" y2="-20.32" width="0.1524" layer="91" grouprefs="VI_SET"/>
 <pinref part="R23" gate="G$1" pin="1"/>
-<wire x1="58.42" y1="-20.32" x2="35.56" y2="-20.32" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<junction x="35.56" y="-20.32" grouprefs="VI_SET"/>
+<wire x1="58.42" y1="-25.4" x2="35.56" y2="-25.4" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<junction x="35.56" y="-25.4" grouprefs="VI_SET"/>
 </segment>
 </net>
 <net name="N$15" class="0">
 <segment>
 <pinref part="T2" gate="G1" pin="B"/>
 <pinref part="R23" gate="G$1" pin="2"/>
-<wire x1="73.66" y1="-20.32" x2="68.58" y2="-20.32" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="73.66" y1="-25.4" x2="68.58" y2="-25.4" width="0.1524" layer="91" grouprefs="VI_SET"/>
 </segment>
 </net>
 <net name="N$16" class="0">
 <segment>
 <pinref part="T2" gate="G1" pin="C"/>
 <pinref part="LED1" gate="G$1" pin="C"/>
-<wire x1="78.74" y1="-15.24" x2="78.74" y2="-12.7" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="78.74" y1="-20.32" x2="78.74" y2="-17.78" width="0.1524" layer="91" grouprefs="VI_SET"/>
 </segment>
 </net>
 <net name="N$17" class="0">
 <segment>
 <pinref part="LED1" gate="G$1" pin="A"/>
 <pinref part="R24" gate="G$1" pin="1"/>
-<wire x1="78.74" y1="-5.08" x2="78.74" y2="0" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="78.74" y1="-10.16" x2="78.74" y2="-5.08" width="0.1524" layer="91" grouprefs="VI_SET"/>
 </segment>
 </net>
 <net name="+5V" class="0">
 <segment>
 <pinref part="R24" gate="G$1" pin="2"/>
 <pinref part="P+1" gate="1" pin="+5V"/>
-<wire x1="78.74" y1="10.16" x2="78.74" y2="12.7" width="0.1524" layer="91" grouprefs="VI_SET"/>
+<wire x1="78.74" y1="5.08" x2="78.74" y2="7.62" width="0.1524" layer="91" grouprefs="VI_SET"/>
+</segment>
+<segment>
+<pinref part="P+5" gate="1" pin="+5V"/>
+<pinref part="C8" gate="G$1" pin="1"/>
+<pinref part="IC4" gate="G$1" pin="VDD"/>
+<wire x1="-25.4" y1="30.48" x2="-30.48" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="-30.48" y1="33.02" x2="-35.56" y2="33.02" width="0.1524" layer="91"/>
+<pinref part="IC4" gate="G$1" pin="SHDN"/>
+<wire x1="-35.56" y1="30.48" x2="-30.48" y2="30.48" width="0.1524" layer="91"/>
+<junction x="-30.48" y="30.48"/>
+<wire x1="-30.48" y1="30.48" x2="-30.48" y2="33.02" width="0.1524" layer="91"/>
+<junction x="-30.48" y="33.02"/>
+<wire x1="-30.48" y1="33.02" x2="-30.48" y2="35.56" width="0.1524" layer="91"/>
+<pinref part="IC3" gate="G$1" pin="VDD"/>
+<wire x1="-35.56" y1="-20.32" x2="-30.48" y2="-20.32" width="0.1524" layer="91"/>
+<pinref part="C9" gate="G$1" pin="1"/>
+<wire x1="-30.48" y1="-20.32" x2="-30.48" y2="-22.86" width="0.1524" layer="91"/>
+<pinref part="IC3" gate="G$1" pin="SHDN"/>
+<wire x1="-30.48" y1="-22.86" x2="-25.4" y2="-22.86" width="0.1524" layer="91"/>
+<wire x1="-35.56" y1="-22.86" x2="-30.48" y2="-22.86" width="0.1524" layer="91"/>
+<junction x="-30.48" y="-22.86"/>
+<wire x1="-30.48" y1="30.48" x2="-30.48" y2="-20.32" width="0.1524" layer="91"/>
+<junction x="-30.48" y="-20.32"/>
 </segment>
 </net>
 <net name="VSET" class="0">
 <segment>
 <pinref part="U2" gate="G1" pin="+IN"/>
-<wire x1="12.7" y1="30.48" x2="-2.54" y2="30.48" width="0.1524" layer="91" grouprefs="VI_SET"/>
-<label x="-2.54" y="30.48" size="1.778" layer="95" grouprefs="VI_SET"/>
+<label x="-2.54" y="25.4" size="1.778" layer="95" grouprefs="VI_SET"/>
+<pinref part="IC4" gate="G$1" pin="VOUT"/>
+<wire x1="-35.56" y1="25.4" x2="12.7" y2="25.4" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="V+" class="0">
@@ -7673,7 +7734,7 @@ Source: www.kingbright.com</description>
 <net name="ADC_IOUT" class="0">
 <segment>
 <pinref part="U2" gate="G2" pin="+IN"/>
-<wire x1="-10.16" y1="-17.78" x2="12.7" y2="-17.78" width="0.1524" layer="91"/>
+<wire x1="-10.16" y1="-22.86" x2="12.7" y2="-22.86" width="0.1524" layer="91"/>
 <pinref part="R16" gate="G$1" pin="2"/>
 <wire x1="-22.86" y1="78.74" x2="-25.4" y2="78.74" width="0.1524" layer="91" grouprefs="CURRENTMONDIFFAMP"/>
 <junction x="-22.86" y="78.74"/>
@@ -7681,7 +7742,14 @@ Source: www.kingbright.com</description>
 <pinref part="C2" gate="G$1" pin="1"/>
 <wire x1="-22.86" y1="73.66" x2="-22.86" y2="78.74" width="0.1524" layer="91" grouprefs="CURRENTMONDIFFAMP"/>
 <label x="-5.08" y="83.82" size="1.778" layer="95"/>
-<wire x1="-10.16" y1="-17.78" x2="-10.16" y2="78.74" width="0.1524" layer="91"/>
+<wire x1="-10.16" y1="-22.86" x2="-10.16" y2="78.74" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$1" class="0">
+<segment>
+<pinref part="IC3" gate="G$1" pin="VOUT"/>
+<pinref part="U2" gate="G2" pin="-IN"/>
+<wire x1="-35.56" y1="-27.94" x2="12.7" y2="-27.94" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
