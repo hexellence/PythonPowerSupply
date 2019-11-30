@@ -7169,9 +7169,9 @@ Source: www.kingbright.com</description>
 <instance part="SUPPLY5" gate="GND" x="-127" y="91.44" smashed="yes" grouprefs="CURRENTMONDIFFAMP">
 <attribute name="VALUE" x="-128.905" y="88.265" size="1.778" layer="96"/>
 </instance>
-<instance part="IC4" gate="G$1" x="-81.28" y="20.32" smashed="yes" rot="MR180">
-<attribute name="NAME" x="-88.9" y="8.89" size="1.778" layer="95" rot="MR180"/>
-<attribute name="VALUE" x="-88.9" y="33.02" size="1.778" layer="96" rot="MR180"/>
+<instance part="IC4" gate="G$1" x="-106.68" y="12.7" smashed="yes" rot="MR180">
+<attribute name="NAME" x="-114.3" y="1.27" size="1.778" layer="95" rot="MR180"/>
+<attribute name="VALUE" x="-114.3" y="25.4" size="1.778" layer="96" rot="MR180"/>
 </instance>
 <instance part="SUPPLY6" gate="GND" x="10.16" y="-10.16" smashed="yes" grouprefs="VI_SET">
 <attribute name="VALUE" x="8.255" y="-13.335" size="1.778" layer="96"/>
