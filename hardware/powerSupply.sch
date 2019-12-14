@@ -32975,11 +32975,8 @@ Source: EC12E.scr from eagle.support.ger on news.cadsoft.de at 08.10.2007</descr
 <part name="SUPPLY26" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
 <part name="IC5" library="74xx-us" library_urn="urn:adsk.eagle:library:88" deviceset="74*139" device="D" package3d_urn="urn:adsk.eagle:package:2918/1" technology="LS"/>
 <part name="C10" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="C-US" device="050-024X044" package3d_urn="urn:adsk.eagle:package:6240356/1" value="100n"/>
-<part name="C12" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="C-US" device="050-024X044" package3d_urn="urn:adsk.eagle:package:6240356/1" value="100n"/>
 <part name="SUPPLY27" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
-<part name="SUPPLY28" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
 <part name="SUPPLY29" library="SparkFun-PowerSymbols" deviceset="3.3V" device=""/>
-<part name="SUPPLY30" library="SparkFun-PowerSymbols" deviceset="3.3V" device=""/>
 <part name="SUPPLY31" library="SparkFun-PowerSymbols" deviceset="3.3V" device=""/>
 <part name="LCD1" library="Hexellence-Displays" deviceset="LCD-16X2" device="SILK"/>
 <part name="SUPPLY25" library="SparkFun-PowerSymbols" library_urn="urn:adsk.eagle:library:530" deviceset="5V" device=""/>
@@ -33337,21 +33334,11 @@ Vo = Vp-Vn</text>
 <attribute name="NAME" x="13.716" y="76.835" size="1.778" layer="95"/>
 <attribute name="VALUE" x="13.716" y="72.009" size="1.778" layer="96"/>
 </instance>
-<instance part="C12" gate="G$1" x="12.7" y="35.56" smashed="yes" grouprefs="SPI_CS_EXT">
-<attribute name="NAME" x="13.716" y="36.195" size="1.778" layer="95"/>
-<attribute name="VALUE" x="13.716" y="31.369" size="1.778" layer="96"/>
-</instance>
 <instance part="SUPPLY27" gate="GND" x="12.7" y="66.04" smashed="yes" grouprefs="SPI_CS_EXT">
 <attribute name="VALUE" x="10.795" y="62.865" size="1.778" layer="96"/>
 </instance>
-<instance part="SUPPLY28" gate="GND" x="12.7" y="25.4" smashed="yes" grouprefs="SPI_CS_EXT">
-<attribute name="VALUE" x="10.795" y="22.225" size="1.778" layer="96"/>
-</instance>
 <instance part="SUPPLY29" gate="G$1" x="12.7" y="81.28" smashed="yes" grouprefs="SPI_CS_EXT">
 <attribute name="VALUE" x="12.7" y="84.074" size="1.778" layer="96" align="bottom-center"/>
-</instance>
-<instance part="SUPPLY30" gate="G$1" x="12.7" y="40.64" smashed="yes" grouprefs="SPI_CS_EXT">
-<attribute name="VALUE" x="12.7" y="43.434" size="1.778" layer="96" align="bottom-center"/>
 </instance>
 <instance part="SUPPLY31" gate="G$1" x="99.06" y="101.6" smashed="yes">
 <attribute name="VALUE" x="99.06" y="104.394" size="1.778" layer="96" align="bottom-center"/>
@@ -33834,11 +33821,6 @@ Vo = Vp-Vn</text>
 <pinref part="SUPPLY27" gate="GND" pin="GND"/>
 <pinref part="C10" gate="G$1" pin="2"/>
 <wire x1="12.7" y1="68.58" x2="12.7" y2="71.12" width="0.1524" layer="91" grouprefs="SPI_CS_EXT"/>
-</segment>
-<segment>
-<pinref part="SUPPLY28" gate="GND" pin="GND"/>
-<pinref part="C12" gate="G$1" pin="2"/>
-<wire x1="12.7" y1="27.94" x2="12.7" y2="30.48" width="0.1524" layer="91" grouprefs="SPI_CS_EXT"/>
 </segment>
 <segment>
 <pinref part="LCD1" gate="LCD1" pin="VSS"/>
@@ -34528,11 +34510,6 @@ Vo = Vp-Vn</text>
 <pinref part="C10" gate="G$1" pin="1"/>
 <pinref part="SUPPLY29" gate="G$1" pin="3.3V"/>
 <wire x1="12.7" y1="78.74" x2="12.7" y2="81.28" width="0.1524" layer="91" grouprefs="SPI_CS_EXT"/>
-</segment>
-<segment>
-<pinref part="C12" gate="G$1" pin="1"/>
-<pinref part="SUPPLY30" gate="G$1" pin="3.3V"/>
-<wire x1="12.7" y1="38.1" x2="12.7" y2="40.64" width="0.1524" layer="91" grouprefs="SPI_CS_EXT"/>
 </segment>
 <segment>
 <pinref part="C8" gate="G$1" pin="1"/>
