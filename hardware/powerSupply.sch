@@ -34130,6 +34130,7 @@ Vo = Vp-Vn</text>
 <segment>
 <pinref part="SUPPLY28" gate="GND" pin="GND"/>
 <wire x1="198.12" y1="-33.02" x2="198.12" y2="-30.48" width="0.1524" layer="91"/>
+<pinref part="SW7" gate="G$1" pin="4"/>
 </segment>
 </net>
 <net name="N$6" class="0">
@@ -34466,6 +34467,14 @@ Vo = Vp-Vn</text>
 <label x="271.78" y="5.08" size="1.778" layer="95" rot="R90"/>
 <pinref part="J3" gate="G$1" pin="MOSI"/>
 <wire x1="271.78" y1="2.54" x2="271.78" y2="15.24" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<wire x1="53.34" y1="93.98" x2="55.88" y2="96.52" width="0.1524" layer="91"/>
+<label x="55.88" y="96.52" size="1.778" layer="95"/>
+<wire x1="55.88" y1="96.52" x2="66.04" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="66.04" y1="96.52" x2="66.04" y2="99.06" width="0.1524" layer="91"/>
+<pinref part="IC4" gate="G$1" pin="SDI"/>
+<wire x1="66.04" y1="99.06" x2="73.66" y2="99.06" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SCLK" class="0">
@@ -34869,10 +34878,6 @@ Vo = Vp-Vn</text>
 <wire x1="50.8" y1="99.06" x2="27.94" y2="99.06" width="0.1524" layer="91"/>
 <pinref part="IC5" gate="B" pin="Y0"/>
 <wire x1="27.94" y1="99.06" x2="27.94" y2="88.9" width="0.1524" layer="91"/>
-<wire x1="53.34" y1="96.52" x2="55.88" y2="99.06" width="0.1524" layer="91"/>
-<wire x1="55.88" y1="99.06" x2="73.66" y2="99.06" width="0.1524" layer="91"/>
-<label x="58.42" y="99.06" size="1.778" layer="95"/>
-<pinref part="IC4" gate="G$1" pin="SDI"/>
 </segment>
 </net>
 <net name="A0" class="0">

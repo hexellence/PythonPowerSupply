@@ -4,11 +4,14 @@ from RPi import GPIO
 import MIDAS_LCD
 import RotaryKnob
 
+from mcp3008ADC import mcp3008
 
 
-spi = spiExpanded(3, mode = 0)
-time.sleep(1)
-lcd = MIDAS_LCD.MidasLcd(spi, 4)
+spiLcd = spiExpanded(3, mode = 0)
+lcd = MIDAS_LCD.MidasLcd(spiLcd, 4)
+
+spiAdc = spiExpanded(0, mode = 0)
+ADC1 = mcp3008(spiAdc, 4096)
 
 
 vKnob = RotaryKnob.rotKnob(20, 21)
@@ -20,8 +23,10 @@ try:
 
     while True:
         counter = vKnob.updateKnob()
-        lcd.lcdWriteLoc(str(counter), 0, 0)        
-        
+        lcd.lcdWriteLoc(str(ADC1.read_adcMilliVolts(2)), 0, 0)  
+        time.sleep(1)
+        lcd.lcdWriteLoc(str(ADC1.read_adcMilliVolts(1)), 0, 0)  
+        time.sleep(1)
 
 	
 except KeyboardInterrupt: # Ctrl+C pressed, so
