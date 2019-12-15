@@ -56,12 +56,17 @@ class MidasLcd:
         
     #end def
 
-    def lcdWriteLoc(self, list, line, loc):
+    def lcdWriteLoc(self, list, line, loc, space):
     
         assert loc < MAX_LCD_LINE_SIZE and line < MAX_LCD_LINE_COUNT and loc+len(list) <= MAX_LCD_LINE_SIZE
+        
+        newList = list
+        for i in range(space - len(list)):
+            newList +=' '
+        
         if line != 0 : loc = LINE_2_ADDRESS_START + loc
         self.lcdCommand(loc | DDRAM_ADDRESS_REGISTER_MASK)
-        self.lcdWriteList(list)
+        self.lcdWriteList(newList)
     #end def
     
     def Close(self):
