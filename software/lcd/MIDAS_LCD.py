@@ -36,7 +36,6 @@ class MidasLcd:
     
         GPIO.output(self.rsPin, False)
         resp = self.spi.xfer([byte])
-        time.sleep(0.01) # sleep for 0.01 seconds
         
     #end def        
 
@@ -52,7 +51,6 @@ class MidasLcd:
     
         GPIO.output(self.rsPin, True)
         resp = self.spi.xfer(bytearray(list))
-        time.sleep(0.01) # sleep for 0.01 seconds
         
     #end def
 
@@ -67,7 +65,7 @@ class MidasLcd:
                 newList += c
         if(space > 0):
             for i in range(space - len(newList)):
-                newList +=' '
+                newList += ' '
         
         if line != 0 : loc = LINE_2_ADDRESS_START + loc
         self.lcdCommand(loc | DDRAM_ADDRESS_REGISTER_MASK)
