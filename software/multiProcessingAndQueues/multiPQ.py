@@ -18,12 +18,19 @@ def loop_knob():
     iKnob = RotaryKnob.rotKnob(16, 19)
     iKnob.open()
     while 1:
-        voltageQ.put(vKnob.updateKnob())
-        currentQ.put(iKnob.updateKnob())
+        vSet = vKnob.updateKnob()
+        if(vSet < 0):
+            vSet = 0
+        voltageQ.put(vSet)
+        
+        iSet = iKnob.updateKnob()
+        if(iSet < 0):
+            iSet = 0
+        currentQ.put(iSet)
 
 
 
-def loop_lcd():
+def loop_spi():
     spiLcd = spiExpanded(3, mode = 0)
     lcd = MIDAS_LCD.MidasLcd(spiLcd, 4)
     
@@ -54,7 +61,7 @@ def loop_lcd():
 
 
 p1 = Process(target=loop_knob)
-p2 = Process(target=loop_lcd)
+p2 = Process(target=loop_spi)
 
 
 p1.start()
