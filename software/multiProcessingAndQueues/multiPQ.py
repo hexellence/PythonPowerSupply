@@ -45,18 +45,21 @@ def loop_spi():
     newCurrent = 0
     lastSavedCurrent = 1
     lcd.lcdWriteLoc("SET ", 0, 0)
-    while 1:    
+    lastTime = 0
+    while 1: 
         newVoltage = voltageQ.get()
         newCurrent = currentQ.get()
-        if(newVoltage != lastSavedVoltage):
+        currentTime = time.time()
+        
+        print(newVoltage)
+        #print(currentTime - lastTime)
+        if((newVoltage != lastSavedVoltage) and (currentTime - lastTime > 0.16)):
             lastSavedVoltage = newVoltage
+            lastTime = currentTime
             lcd.lcdWriteLoc("%.2fV" % (newVoltage/100.0), 0, 4, 5)
             vDAC.setVoltage(newVoltage)
-        if(newCurrent != lastSavedCurrent):
-            lastSavedCurrent = newCurrent
-            lcd.lcdWriteLoc("%.2fA" % (newCurrent/100.0), 0, 10, 5)
-            iDAC.setVoltage(newCurrent)
             
+        
         
 
 
