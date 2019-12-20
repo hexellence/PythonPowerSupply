@@ -2,19 +2,8 @@ import spidev
 import time
 from RPi import GPIO
 
-#user config
-REGISTER_SELECT_PIN = 21 
 
-#device dependent values
-MAX_LCD_LINE_SIZE = 16
-MAX_LCD_LINE_COUNT = 2
-LINE_2_ADDRESS_START = 0x40
-DDRAM_ADDRESS_REGISTER_MASK = 0x80
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(REGISTER_SELECT_PIN, GPIO.OUT)
-  
-    
+   
 class rotKnob:
     
     def __init__(self, clk, dt):
@@ -44,7 +33,6 @@ class rotKnob:
             else:
                 self.counter -= 1
             self.clkLastState = self.clkState
-            
         return self.counter
         
     #end def
