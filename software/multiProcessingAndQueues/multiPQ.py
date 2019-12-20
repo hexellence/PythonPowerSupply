@@ -11,6 +11,9 @@ from mcp4821DAC import mcp4821
 voltageQ = Queue(maxsize=20) 
 currentQ = Queue(maxsize=20) 
 
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(14, GPIO.OUT)
+GPIO.output(14, True)
 
 def loop_knob():
     vKnob = RotaryKnob.rotKnob(20, 21)
@@ -40,6 +43,9 @@ def loop_spi():
     spiIDac = spiExpanded(2, mode = 0)
     iDAC = mcp4821(spiIDac)
     
+    #Turn On LCD
+    GPIO.output(14, False)
+    
     newVoltage = 0
     lastSavedVoltage = 1
     newCurrent = 0
@@ -56,7 +62,7 @@ def loop_spi():
         if((newVoltage != lastSavedVoltage) and (currentTime - lastTime > 0.16)):
             lastSavedVoltage = newVoltage
             lastTime = currentTime
-            lcd.lcdWriteLoc("%.2fV" % (newVoltage/100.0), 0, 4, 5)
+            lcd.lcdWriteLoc("%.2fV" % (newVoltage/100.0), 0, 4, 6)
             vDAC.setVoltage(newVoltage)
             
         

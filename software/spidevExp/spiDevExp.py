@@ -13,7 +13,7 @@ A1_PIN = 5
 
 class spiExpanded:    
       
-    def __init__(self, address, speed = 350000, lsbFirst = False, mode = 3, csActiveHigh = False):
+    def __init__(self, address, speed = 300000, lsbFirst = False, mode = 3, csActiveHigh = False):
         
         global isResourceReady
         global spi0
