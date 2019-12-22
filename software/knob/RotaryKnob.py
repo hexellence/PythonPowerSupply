@@ -4,13 +4,10 @@ import math
 from RPi import GPIO
 import pigpio
 
-
-HIGH_SPEED_THRESHOLD = 110 # Clicks per second
-HIGH_SPEED_STEP = 50    # Clicks multiplier when high speed
    
 class rotKnob:
     
-    def __init__(self, clkPin, dtPin, countMin = -10000, countMax = 10000):
+    def __init__(self, clkPin, dtPin, countMin = -10000, countMax = 10000, highSpeedThrs = -1, highSpeedStep = 50):
         
         # the pins must be in the same bank because we need to read them simultaneously
         assert ((clkPin < 32) and (dtPin < 32) and (clkPin >= 0) and (dtPin >= 0))
@@ -18,7 +15,8 @@ class rotKnob:
         self.clkPin = clkPin
         self.dtPin = dtPin
         self.counter = 0
-        self.speed = 0
+        self.highSpeedThrs = highSpeedThrs
+        self.highSpeedStep = highSpeedStep
         self.lastTime = 0
         self.clkState = 0
         self.dtState = 0
@@ -59,13 +57,13 @@ class rotKnob:
                 # When clk state have an edge and if dt is leading this is the decrement direction
                 currentStep = -1
                 
-            self.speed = 1 / (currentTime - self.lastTime)    
+            clickSpeed = 1 / (currentTime - self.lastTime)    
                         
             self.clkLastState = self.clkState
                         
             # speed multiplier
-            if(self.speed > HIGH_SPEED_THRESHOLD):
-                currentStep = currentStep * HIGH_SPEED_STEP
+            if(clickSpeed > self.highSpeedThrs) and (self.highSpeedThrs > 0):
+                currentStep = currentStep * self.highSpeedStep
             
             #contribute to counter
             self.counter += currentStep

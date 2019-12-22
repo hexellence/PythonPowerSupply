@@ -22,9 +22,9 @@ GPIO.setup(14, GPIO.OUT)
 GPIO.output(14, True)
 
 def loop_knob():
-    vKnob = RotaryKnob.rotKnob(clkPin = 20, dtPin = 21, countMin = 0, countMax = 2400)
+    vKnob = RotaryKnob.rotKnob(clkPin = 20, dtPin = 21, countMin = 0, countMax = 2400, highSpeedThrs = 150, highSpeedStep = 50)
     vKnob.open()
-    iKnob = RotaryKnob.rotKnob(clkPin = 16, dtPin = 19, countMin = 0, countMax = 1000)
+    iKnob = RotaryKnob.rotKnob(clkPin = 16, dtPin = 19, countMin = 0, countMax = 1000, highSpeedThrs = 200, highSpeedStep = 10)
     iKnob.open()
     while 1:
         voltageQ.put(vKnob.updateKnob())        
