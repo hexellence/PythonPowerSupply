@@ -7,30 +7,29 @@ from spiDevExp import spiExpanded
 from multiprocessing import Process, Queue
 from mcp4821DAC import mcp4821
 
+# This is needed because I could not find other way to read two GPIOs at the same time. 
+# pigpio helps and it's daemon has to be started 
+from os import system
+system("sudo pigpiod")
 
+# This is needed to interprocess communication, queue size is not experimented.
 voltageQ = Queue(maxsize=20) 
 currentQ = Queue(maxsize=20) 
 
+# Turn off the LCD and turn on after it has been initialised
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(14, GPIO.OUT)
 GPIO.output(14, True)
 
 def loop_knob():
-    vKnob = RotaryKnob.rotKnob(20, 21)
+    vKnob = RotaryKnob.rotKnob(clkPin = 20, dtPin = 21, countMin = 0, countMax = 2400)
     vKnob.open()
-    iKnob = RotaryKnob.rotKnob(16, 19)
+    iKnob = RotaryKnob.rotKnob(clkPin = 16, dtPin = 19, countMin = 0, countMax = 1000)
     iKnob.open()
     while 1:
-        vSet = vKnob.updateKnob()
-        if(vSet < 0):
-            vSet = 0
-        voltageQ.put(vSet)
-        
-        iSet = iKnob.updateKnob()
-        if(iSet < 0):
-            iSet = 0
-        currentQ.put(iSet)
-
+        voltageQ.put(vKnob.updateKnob())        
+        currentQ.put(iKnob.updateKnob())
+#def loop_knob
 
 
 def loop_spi():
@@ -57,14 +56,14 @@ def loop_spi():
         newCurrent = currentQ.get()
         currentTime = time.time()
         
-        print(newVoltage)
+        #print(newVoltage)
         #print(currentTime - lastTime)
         if((newVoltage != lastSavedVoltage) and (currentTime - lastTime > 0.16)):
             lastSavedVoltage = newVoltage
             lastTime = currentTime
             lcd.lcdWriteLoc("%.2fV" % (newVoltage/100.0), 0, 4, 6)
             vDAC.setVoltage(newVoltage)
-            
+#def loop_spi()
         
         
 

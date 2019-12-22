@@ -2,65 +2,84 @@ import spidev
 import time
 import math
 from RPi import GPIO
+import pigpio
 
-COUNT_MIN = 0
-COUNT_MAX = 2400
-POS_HIGH_SPEED_THRESHOLD = 110 # Clicks per second
-NEG_HIGH_SPEED_THRESHOLD = -110 # Clicks per second
+
+HIGH_SPEED_THRESHOLD = 110 # Clicks per second
+HIGH_SPEED_STEP = 50    # Clicks multiplier when high speed
    
 class rotKnob:
     
-    def __init__(self, clk, dt):
-    
-        self.clk = clk
-        self.dt = dt
+    def __init__(self, clkPin, dtPin, countMin = -10000, countMax = 10000):
+        
+        # the pins must be in the same bank because we need to read them simultaneously
+        assert ((clkPin < 32) and (dtPin < 32) and (clkPin >= 0) and (dtPin >= 0))
+        # Definitions and Initialisaton 
+        self.clkPin = clkPin
+        self.dtPin = dtPin
         self.counter = 0
-        self.lastCounter = 0
         self.speed = 0
         self.lastTime = 0
+        self.clkState = 0
+        self.dtState = 0
+        self.clkPinMask = 1 << self.clkPin
+        self.dtPinMask = 1 << self.dtPin
+        self.countMin = countMin
+        self.countMax = countMax
+        # Next will help to read pins at the same time. note that the pins should be in the same bank
+        self.pi = pigpio.pi()
         
     #end def
+    
     
     def open(self):
     
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.clk, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.setup(self.dt, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) 
-        self.clkLastState = GPIO.input(self.clk)        
+        GPIO.setup(self.clkPin, GPIO.IN)
+        GPIO.setup(self.dtPin, GPIO.IN) 
+        self.clkLastState = GPIO.input(self.clkPin)
     
     #end def
 
+
     def updateKnob(self):
-    
-        self.clkState = GPIO.input(self.clk)
-        self.dtState = GPIO.input(self.dt)
+        
+        gpioBank = self.pi.read_bank_1()    #read bank as a whole and decide pin values, this is needed because the pins should be read simultaneously
+        self.clkState = (gpioBank & self.clkPinMask) == self.clkPinMask 
+        self.dtState = (gpioBank & self.dtPinMask) == self.dtPinMask
+        # time is needed to calculate click speed
         currentTime = time.time()
         
-        if self.clkState != self.clkLastState:
+        # protect agains divide by zero and start if there is a change in one of the pins
+        if(self.clkState != self.clkLastState) and (currentTime - self.lastTime > 0.001):
             if(self.dtState != self.clkState):
-                self.counter += 1
-                if(self.counter > COUNT_MAX):
-                    self.counter = COUNT_MAX
+                # When clk state have an edge and if dt is following this is the incerement direction
+                currentStep = 1              
             else:
-                self.counter -= 1
-                if(self.counter < COUNT_MIN):
-                    self.counter = COUNT_MIN
-                    
+                # When clk state have an edge and if dt is leading this is the decrement direction
+                currentStep = -1
+                
+            self.speed = 1 / (currentTime - self.lastTime)    
+                        
             self.clkLastState = self.clkState
+                        
+            # speed multiplier
+            if(self.speed > HIGH_SPEED_THRESHOLD):
+                currentStep = currentStep * HIGH_SPEED_STEP
             
-            self.speed = (self.counter - self.lastCounter) / (currentTime - self.lastTime)
-
-            if(self.speed > POS_HIGH_SPEED_THRESHOLD):
-                self.counter = self.counter + 50
-                if(self.counter > COUNT_MAX):
-                    self.counter = COUNT_MAX
-            elif(self.speed < NEG_HIGH_SPEED_THRESHOLD):
-                self.counter = self.counter - 50
-                if(self.counter < COUNT_MIN):
-                    self.counter = COUNT_MIN
+            #contribute to counter
+            self.counter += currentStep
             
-            self.lastCounter = self.counter
+            # limiter
+            if(self.counter > self.countMax):
+                    self.counter = self.countMax
+            if(self.counter < self.countMin):
+                    self.counter = self.countMin
+            
             self.lastTime = currentTime
         return self.counter
         
     #end def
+    
+
+    
