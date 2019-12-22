@@ -3,11 +3,11 @@ import time
 import math
 from RPi import GPIO
 import pigpio
-
+SPEED_MEASUREMENT_WINDOW = 0.5
    
 class rotKnob:
     
-    def __init__(self, clkPin, dtPin, countMin = -10000, countMax = 10000, highSpeedThrs = -1, highSpeedStep = 50):
+    def __init__(self, clkPin, dtPin, countMin = -10000, countMax = 10000, highSpeedThrs = -1, highSpeedStep = 100):
         
         # the pins must be in the same bank because we need to read them simultaneously
         assert ((clkPin < 32) and (dtPin < 32) and (clkPin >= 0) and (dtPin >= 0))
@@ -15,9 +15,10 @@ class rotKnob:
         self.clkPin = clkPin
         self.dtPin = dtPin
         self.counter = 0
+        self.firstCount = 0
         self.highSpeedThrs = highSpeedThrs
         self.highSpeedStep = highSpeedStep
-        self.lastTime = 0
+        self.firstTime = 0
         self.clkState = 0
         self.dtState = 0
         self.clkPinMask = 1 << self.clkPin
@@ -47,23 +48,33 @@ class rotKnob:
         self.dtState = (gpioBank & self.dtPinMask) == self.dtPinMask
         # time is needed to calculate click speed
         currentTime = time.time()
-        
+        clickSpeed = 0
+          
         # protect agains divide by zero and start if there is a change in one of the pins
-        if(self.clkState != self.clkLastState) and (currentTime - self.lastTime > 0.001):
+        if(self.clkState != self.clkLastState):
+            if(self.firstCount == 0):
+                self.firstCount = self.counter
+                self.firstTime = currentTime
+            
             if(self.dtState != self.clkState):
-                # When clk state have an edge and if dt is following this is the incerement direction
+                # When clk state have an edge and if dt is following; this is the incerement direction
                 currentStep = 1              
             else:
-                # When clk state have an edge and if dt is leading this is the decrement direction
+                # When clk state have an edge and if dt is leading; this is the decrement direction
                 currentStep = -1
-                
-            clickSpeed = 1 / (currentTime - self.lastTime)    
-                        
             self.clkLastState = self.clkState
+            
+            # define a window for speed calculation
+            if(currentTime > self.firstTime + SPEED_MEASUREMENT_WINDOW):
+                clickSpeed = (self.counter - self.firstCount) / (currentTime - self.firstTime)    
+                self.firstCount = 0
+                self.firstTime = 0.0      
+                #print int(clickSpeed)                
                         
             # speed multiplier
-            if(clickSpeed > self.highSpeedThrs) and (self.highSpeedThrs > 0):
+            if(abs(clickSpeed) > self.highSpeedThrs) and (self.highSpeedThrs > 0):
                 currentStep = currentStep * self.highSpeedStep
+                #print("high speed")
             
             #contribute to counter
             self.counter += currentStep
@@ -74,7 +85,6 @@ class rotKnob:
             if(self.counter < self.countMin):
                     self.counter = self.countMin
             
-            self.lastTime = currentTime
         return self.counter
         
     #end def
