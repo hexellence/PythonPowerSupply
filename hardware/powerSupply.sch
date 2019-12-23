@@ -33573,12 +33573,12 @@ Vo = Vp-Vn</text>
 <attribute name="VALUE" x="341.757" y="167.64" size="1.778" layer="96" rot="R270"/>
 <attribute name="NAME" x="337.82" y="159.131" size="1.778" layer="95"/>
 </instance>
-<instance part="X2" gate="-1" x="335.28" y="106.68" smashed="yes" rot="R180" grouprefs="REGULATOR">
-<attribute name="NAME" x="335.28" y="105.791" size="1.778" layer="95"/>
+<instance part="X2" gate="-1" x="337.82" y="106.68" smashed="yes" rot="R180" grouprefs="REGULATOR">
+<attribute name="NAME" x="337.82" y="105.791" size="1.778" layer="95"/>
 </instance>
-<instance part="X2" gate="-2" x="335.28" y="99.06" smashed="yes" rot="R180" grouprefs="REGULATOR">
-<attribute name="VALUE" x="341.757" y="106.68" size="1.778" layer="96" rot="R270"/>
-<attribute name="NAME" x="335.28" y="98.171" size="1.778" layer="95"/>
+<instance part="X2" gate="-2" x="335.28" y="114.3" smashed="yes" rot="R180" grouprefs="REGULATOR">
+<attribute name="VALUE" x="341.757" y="114.3" size="1.778" layer="96" rot="R270"/>
+<attribute name="NAME" x="335.28" y="113.411" size="1.778" layer="95"/>
 </instance>
 <instance part="X3" gate="-1" x="-22.86" y="182.88" smashed="yes" grouprefs="CURRENT_MONITOR">
 <attribute name="NAME" x="-22.86" y="183.769" size="1.778" layer="95" rot="R180"/>
@@ -33654,11 +33654,16 @@ Vo = Vp-Vn</text>
 <wire x1="314.96" y1="167.64" x2="314.96" y2="144.78" width="0.1524" layer="91"/>
 <junction x="314.96" y="167.64"/>
 <label x="297.18" y="170.18" size="1.778" layer="95"/>
-<wire x1="332.74" y1="167.64" x2="314.96" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="332.74" y1="167.64" x2="325.12" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="325.12" y1="167.64" x2="314.96" y2="167.64" width="0.1524" layer="91"/>
 <wire x1="281.94" y1="149.86" x2="281.94" y2="167.64" width="0.1524" layer="91"/>
 <junction x="281.94" y="167.64"/>
 <pinref part="C11" gate="G$1" pin="+"/>
 <pinref part="X1" gate="-1" pin="KL"/>
+<pinref part="X1" gate="-2" pin="KL"/>
+<wire x1="332.74" y1="160.02" x2="325.12" y2="160.02" width="0.1524" layer="91"/>
+<wire x1="325.12" y1="160.02" x2="325.12" y2="167.64" width="0.1524" layer="91"/>
+<junction x="325.12" y="167.64"/>
 </segment>
 </net>
 <net name="0.064V@25C" class="0">
@@ -33685,13 +33690,8 @@ Vo = Vp-Vn</text>
 <wire x1="294.64" y1="119.38" x2="307.34" y2="119.38" width="0.1524" layer="91"/>
 <wire x1="294.64" y1="116.84" x2="294.64" y2="119.38" width="0.1524" layer="91"/>
 <junction x="294.64" y="119.38"/>
-<wire x1="332.74" y1="160.02" x2="325.12" y2="160.02" width="0.1524" layer="91"/>
-<wire x1="325.12" y1="160.02" x2="325.12" y2="119.38" width="0.1524" layer="91"/>
-<wire x1="325.12" y1="119.38" x2="314.96" y2="119.38" width="0.1524" layer="91"/>
-<junction x="314.96" y="119.38"/>
 <wire x1="281.94" y1="142.24" x2="281.94" y2="119.38" width="0.1524" layer="91"/>
 <pinref part="C11" gate="G$1" pin="-"/>
-<pinref part="X1" gate="-2" pin="KL"/>
 </segment>
 <segment>
 <pinref part="R18" gate="G$1" pin="1"/>
@@ -33702,11 +33702,6 @@ Vo = Vp-Vn</text>
 <pinref part="T1" gate="G1" pin="E"/>
 <pinref part="SUPPLY8" gate="GND" pin="GND"/>
 <wire x1="175.26" y1="55.88" x2="175.26" y2="27.94" width="0.1524" layer="91" grouprefs="VI_SET"/>
-</segment>
-<segment>
-<pinref part="SUPPLY9" gate="GND" pin="GND"/>
-<pinref part="X2" gate="-2" pin="KL"/>
-<wire x1="322.58" y1="99.06" x2="330.2" y2="99.06" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="R25" gate="G$1" pin="1"/>
@@ -33998,6 +33993,12 @@ Vo = Vp-Vn</text>
 <pinref part="JP2" gate="A" pin="5"/>
 <wire x1="330.2" y1="-40.64" x2="340.36" y2="-40.64" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="SUPPLY9" gate="GND" pin="GND"/>
+<wire x1="322.58" y1="99.06" x2="322.58" y2="106.68" width="0.1524" layer="91"/>
+<pinref part="X2" gate="-1" pin="KL"/>
+<wire x1="322.58" y1="106.68" x2="332.74" y2="106.68" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="N$6" class="0">
 <segment>
@@ -34244,9 +34245,9 @@ Vo = Vp-Vn</text>
 <wire x1="307.34" y1="101.6" x2="307.34" y2="99.06" width="0.1524" layer="91"/>
 <junction x="307.34" y="99.06"/>
 <label x="309.88" y="101.6" size="1.778" layer="95"/>
-<wire x1="307.34" y1="99.06" x2="307.34" y2="106.68" width="0.1524" layer="91"/>
-<wire x1="307.34" y1="106.68" x2="330.2" y2="106.68" width="0.1524" layer="91"/>
-<pinref part="X2" gate="-1" pin="KL"/>
+<pinref part="X2" gate="-2" pin="KL"/>
+<wire x1="307.34" y1="99.06" x2="307.34" y2="114.3" width="0.1524" layer="91"/>
+<wire x1="307.34" y1="114.3" x2="330.2" y2="114.3" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ADC_IOUT" class="0">
@@ -34566,7 +34567,7 @@ Vo = Vp-Vn</text>
 <pinref part="R44" gate="G$1" pin="1"/>
 </segment>
 </net>
-<net name="V+1" class="0">
+<net name="VR" class="0">
 <segment>
 <wire x1="104.14" y1="177.8" x2="104.14" y2="180.34" width="0.1524" layer="91"/>
 <wire x1="88.9" y1="180.34" x2="104.14" y2="180.34" width="0.1524" layer="91"/>
