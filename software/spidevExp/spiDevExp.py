@@ -7,8 +7,8 @@ from RPi import GPIO
 isResourceReady = False
 spi0 = None   
 spi1 = None
-A0_PIN = 6
-A1_PIN = 5
+A0_PIN = 17
+A1_PIN = 27
 
 
 class spiExpanded:    

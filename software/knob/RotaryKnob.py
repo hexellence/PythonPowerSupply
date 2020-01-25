@@ -40,6 +40,12 @@ class rotKnob:
     
     #end def
 
+    def Close(self):
+    
+        GPIO.cleanup(self.clkPin)
+        GPIO.cleanup(self.dtPin)        
+    
+    #end def
 
     def updateKnob(self):
         
@@ -89,5 +95,9 @@ class rotKnob:
         
     #end def
     
-
+    def InitialiseCounter(self, initialValue):
+    
+        self.counter = initialValue
+    
+    #end def
     
