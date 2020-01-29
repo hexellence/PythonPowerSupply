@@ -10,8 +10,10 @@ from mcp4821DAC import mcp4821
 from mcp3008ADC import mcp3008
 import pushButton
 import os.path
+from os import system
 import csv
 
+# Used Pins
 V_KNOB_CLK_PIN = 24
 V_KNOB_DT_PIN = 23
 I_KNOB_CLK_PIN = 15
@@ -23,6 +25,7 @@ PB_YELLOW = 6
 PB_RED = 13
 PB_BLUE = 19
 
+# ADC channels assignments
 ADC_CH_GND = 0
 ADC_CH_5V0 = 1
 ADC_CH_3V3 = 2
@@ -32,6 +35,7 @@ ADC_CH_VTEMP = 5
 ADC_CH_ISET = 6
 ADC_CH_VSET = 7
 
+# Preset array indexes
 RED_PRESET_V = 0
 RED_PRESET_I = 1
 YELLOW_PRESET_V = 2
@@ -39,39 +43,57 @@ YELLOW_PRESET_I = 3
 BLUE_PRESET_V = 4
 BLUE_PRESET_I = 5
 
+# LCD ON/OFF Pin Value assignments
+LCD_ON = False
+LCD_OFF = True
+
+# Other assignments
+SHUNT_RESISTOR_VALUE = 1.2
+
 
 # This is needed because I could not find other way to read two GPIOs at the same time. 
 # pigpio helps and it's daemon has to be started 
-from os import system
 system("sudo pigpiod")
 
 # This is needed to interprocess communication, queue size is not experimented.
+# This is Voltage and Current settings filled by the knobs and consumed by the SPI loop
 voltageQ = Queue(maxsize=20) 
 currentQ = Queue(maxsize=20) 
 
-redPresetRecallQ = Queue(maxsize=5) 
+# These are Presets' Store commands' queues
+# Store Queue is filled in by buttons loop i.e. process. True when a long press is performed, False otherwise
+# Store Queue is consumed by the SPI loop i.e. process
 redPresetStoreQ = Queue(maxsize=5) 
-yellowPresetRecallQ = Queue(maxsize=5) 
 yellowPresetStoreQ = Queue(maxsize=5) 
-bluePresetRecallQ = Queue(maxsize=5) 
 bluePresetStoreQ = Queue(maxsize=5) 
 
+# These are Presets' Recall commands' queues
+# Recall Queue is filled in by buttons loop i.e. process. True when a short release is performed, False otherwise
+# Recall Queue is consumed by the knobs loop i.e. process. to push to the knob counters
+redPresetRecallQ = Queue(maxsize=5) 
+yellowPresetRecallQ = Queue(maxsize=5) 
+bluePresetRecallQ = Queue(maxsize=5) 
 
-# Turn off the LCD and turn on after it has been initialised
+# GPIO Assignments
 GPIO.setmode(GPIO.BCM)
+# LCD On/Off pin assignment
 GPIO.setup(LCD_ON_OFF_PIN, GPIO.OUT)
-GPIO.output(LCD_ON_OFF_PIN, True)
+GPIO.output(LCD_ON_OFF_PIN, LCD_OFF)
 
-
+# Preset switches Assignment
 GPIO.setup(PB_YELLOW, GPIO.IN,pull_up_down=GPIO.PUD_UP)
 GPIO.setup(PB_RED, GPIO.IN,pull_up_down=GPIO.PUD_UP)
 GPIO.setup(PB_BLUE, GPIO.IN,pull_up_down=GPIO.PUD_UP)
+
+# Call button management class to work
 redButton = pushButton.pushButtonDev(PB_RED)
 yellowButton = pushButton.pushButtonDev(PB_YELLOW)
 blueButton = pushButton.pushButtonDev(PB_BLUE)
 
-GPIO.setup(4, GPIO.IN)
+# Current Limit Indicator assignment. This lets us know that the current limit comparator is triggered
+GPIO.setup(CLIM_PIN, GPIO.IN)
 
+# Call spi Class and create devices on the SPI bus
 spiADC = spiExpanded(0, mode = 0)
 adc = mcp3008(spiADC, 4096)
     
@@ -84,22 +106,20 @@ vDAC = mcp4821(spiVDac)
 spiIDac = spiExpanded(1, mode = 0)
 iDAC = mcp4821(spiIDac)
 
-vValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-remIndexMin = [0, 0, 0, 0, 0, 0, 0, 0]
-remIndexMax = []
-
+# Call knob Class and create Voltage and Current Knobs
 vKnob = RotaryKnob.rotKnob(clkPin = V_KNOB_CLK_PIN, dtPin = V_KNOB_DT_PIN, countMin = 0, countMax = 1200, highSpeedThrs = 15, highSpeedStep = 100)
 vKnob.open()
 iKnob = RotaryKnob.rotKnob(clkPin = I_KNOB_CLK_PIN, dtPin = I_KNOB_DT_PIN, countMin = 0, countMax = 999, highSpeedThrs = 15, highSpeedStep = 100)
 iKnob.open()
 
+#default presets used only for the first time
 defaultPresets = [500,250,330,200,1200,500]
 
 def loop_knob(defaultPresets, viPresets):
     
-
-    
     while 1:
+        # Check if a preset is requested first if yes let the knobs know the current counter
+        # This is needed because otherwise the knobs when turned start from where they were left
         redPresetRecallStat = redPresetRecallQ.get()
         yellowPresetRecallStat = yellowPresetRecallQ.get()
         bluePresetRecallStat = bluePresetRecallQ.get()
@@ -116,6 +136,7 @@ def loop_knob(defaultPresets, viPresets):
             vKnob.InitialiseCounter(viPresets[BLUE_PRESET_V])
             iKnob.InitialiseCounter(viPresets[BLUE_PRESET_I])
         
+        #get the voltage and current settings from the knobs
         voltageQ.put(vKnob.updateKnob())        
         currentQ.put(iKnob.updateKnob())
 #def loop_knob
@@ -123,30 +144,36 @@ def loop_knob(defaultPresets, viPresets):
 
 def loop_spi(defaultPresets, viPresets):    
     
-    #Turn On LCD
-    GPIO.output(LCD_ON_OFF_PIN, False)   
+    #This is the main loop, it is critical and needs better tuning for user interface
+    
     newVoltage = 0
-    lastSavedVoltage = 1
+    #lastSavedVoltage = 1
     newCurrent = 0
     limVoltage = 0
     limCurrent = 0
-    lastSavedCurrent = 1
-    lcd.lcdWriteLoc("SET ", 0, 0)
+    #lastSavedCurrent = 1
+    
     lastTimeSet = 0
-    lastTimeOut = 0
-    numOfSmaples = 0
+    #lastTimeOut = 0
+    #numOfSmaples = 0
     currentLimOn = False
-    isVoltageErrorOn = False
+    #isVoltageErrorOn = False
     actVoltage = 0
     redPresetStoreStat = False
     yellowPresetStoreStat = False
     bluePresetStoreStat = False
     presetChanged = False
 
-    #read the presets and store them   
+    # Read the presets that is read from a file on before powerup and store them in a sharable Array. 
+    # This is needed for different processes know about the same preset list
+    # defaultPresets is a global but it cannot be shared among proceses
     for i, val in enumerate(defaultPresets): 
         viPresets[i] = int(val)  
 
+    #Turn On LCD
+    GPIO.output(LCD_ON_OFF_PIN, LCD_ON)
+    time.sleep(0.5)
+    lcd.lcdWriteLoc("SET ", 0, 0)
     while 1:        
         newVoltage = voltageQ.get()
         newCurrent = currentQ.get()
@@ -154,7 +181,9 @@ def loop_spi(defaultPresets, viPresets):
         yellowPresetStoreStat = yellowPresetStoreQ.get()
         bluePresetStoreStat = bluePresetStoreQ.get()
         currentTime = time.time()        
-        
+        # The interval selected here is kind of tuned so that the display and knob turning makes better sense to the user.
+        # But unfortunately I am not totally satisfied. The knobs miss some steps and think the knobs are turning to the other direction. 
+        # There are lots of components here including the caps and voltage dividers used with the knobs.
         if(currentTime - lastTimeSet > 0.2):
             lcd.lcdWriteLoc("%.2fV %dmA" % (newVoltage/100.0, newCurrent), 0, 4, 12)
                         
@@ -162,24 +191,24 @@ def loop_spi(defaultPresets, viPresets):
             iDAC.setVoltage(newCurrent)
             
             actVoltage = adc.read_adcMilliVolts(ADC_CH_VSENS)
-        
-            iMonVoltage = adc.read_adcMilliVolts(ADC_CH_IMON)/1.2
+            # The calculation here is because of some current is stolen by the circuit and the bad tolerance of the shunt resistor.
+            iMonVoltage = int(adc.read_adcMilliVolts(ADC_CH_IMON)/SHUNT_RESISTOR_VALUE)
+            iMonVoltage += actVoltage*6.5/100
             iMonVoltage = int(math.ceil(iMonVoltage / 5.0)) * 5
             
-            #Reset limiting conditions, either the knobs are turned or the currentConsumption falls less then 10mA less than the limit
-            
+            #Reset limiting conditions, either the knobs are turned or the currentConsumption falls below the limit            
             if(((limVoltage != newVoltage) or (limCurrent != newCurrent) or (iMonVoltage - limCurrent < 5)) and (currentLimOn == True)):                
                 currentLimOn = False
                 #print("Reset")
             
-            #Save Limiting settings
+            #We want the current limiting latched so the the user will see it until the user does something 
             if((GPIO.input(CLIM_PIN) == 0) and (currentLimOn == False)):
                 limVoltage = newVoltage
                 limCurrent = newCurrent
                 currentLimOn = True
                 #print("Latch")
             
-            #Preset Save or show regular display
+            #Preset Store
             if(redPresetStoreStat == True):
                 viPresets[RED_PRESET_V] = newVoltage
                 viPresets[RED_PRESET_I] = newCurrent 
@@ -193,16 +222,22 @@ def loop_spi(defaultPresets, viPresets):
                 viPresets[BLUE_PRESET_I] = newCurrent
                 presetChanged = True
             else:
+                #Normal or ERR or LIM displays
                 if(actVoltage - newVoltage > 200):
-                    #print("VOLTAGE ERROR")
+                    # The Normal dipslay shows the set voltage at the out row. This is to improve usability 
+                    # To not to mislead the user if the set voltage and actual voltage goes above 200 mV this will be indicated 
+                    # Voltage Error Display
                     lcd.lcdWriteLoc("ERR %.2fV %dmA" % ((actVoltage)/100.0, iMonVoltage), 1, 0, 16)
                 else:
                     if(currentLimOn == True):
+                        # Current Limit Display
                         lcd.lcdWriteLoc("LIM %.2fV %dmA" % ((actVoltage)/100.0, iMonVoltage), 1, 0, 16)
                     else:
+                        # Normal Display
                         lcd.lcdWriteLoc("OUT %.2fV %dmA" % ((newVoltage)/100.0, iMonVoltage), 1, 0, 16)
                 lastTimeSet = time.time() 
             
+            #If a preset is stored store is in the csv file and show it on screen
             if(presetChanged == True):
                 presetsFile = open('PPS_Presets.csv', 'w')
                 csvwriter = csv.writer(presetsFile)
@@ -224,6 +259,7 @@ def loop_Buttons():
             blueButtonStatus = blueButton.read_pushButton()
         
             #RED BUTTON
+            # Check Button Status and push into the queue the status
             if(redButtonStatus == pushButton.PB_RELEASE_SHORT_PRESS):
                 redPresetRecallQ.put(True)
             else:
@@ -235,6 +271,7 @@ def loop_Buttons():
                 redPresetStoreQ.put(False)
         
             #YELLOW BUTTON
+            # Check Button Status and push into the queue the status
             if(yellowButtonStatus == pushButton.PB_RELEASE_SHORT_PRESS):
                 yellowPresetRecallQ.put(True)
             else:
@@ -246,6 +283,7 @@ def loop_Buttons():
                 yellowPresetStoreQ.put(False)
                             
             #BLUE BUTTON    
+            # Check Button Status and push into the queue the status
             if(blueButtonStatus == pushButton.PB_RELEASE_SHORT_PRESS):
                 bluePresetRecallQ.put(True)
             else:   
@@ -260,6 +298,8 @@ def loop_Buttons():
 
 try:
     global defaultPresets
+    
+    #Check presets file and if it does not exist create it with the defaults
     isPresetFilePresent = os.path.isfile('PPS_Presets.csv')
     if(isPresetFilePresent == False):  
         with open('PPS_Presets.csv', 'w') as csvfile:
@@ -273,20 +313,21 @@ try:
                 for i, val in enumerate(row): 
                     defaultPresets[i] = val
     
-    viPresets = Array('i',6)
+    #Shared Array accross processes
+    viPresets = Array('i',6)    
     
-    
-    p1 = Process(target=loop_knob, args=(defaultPresets, viPresets))
-    p2 = Process(target=loop_spi, args=(defaultPresets, viPresets))
-    p3 = Process(target=loop_Buttons)
+    #Processes
+    knobMng = Process(target=loop_knob, args=(defaultPresets, viPresets))
+    spiMng = Process(target=loop_spi, args=(defaultPresets, viPresets))
+    buttonsMng = Process(target=loop_Buttons)
 
-    p1.start()
-    p2.start()
-    p3.start()
+    knobMng.start()
+    spiMng.start()
+    buttonsMng.start()
 
-    p1.join()
-    p2.join()
-    p3.join()
+    knobMng.join()
+    spiMng.join()
+    buttonsMng.join()
     
 except KeyboardInterrupt: # Ctrl+C pressed, so
     print("Shutting Down!!!!!!!!!!!")
@@ -296,8 +337,7 @@ except KeyboardInterrupt: # Ctrl+C pressed, so
     iDAC.Close() #close the port before exit
     lcd.Close()
     GPIO.cleanup()
-    
-    
+  
     
 #end try
 
