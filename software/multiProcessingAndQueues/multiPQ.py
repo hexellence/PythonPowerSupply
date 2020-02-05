@@ -12,6 +12,8 @@ import pushButton
 import os.path
 from os import system
 import csv
+import paho.mqtt.client as mqttClient
+import paho.mqtt.publish as mqttPublish
 
 # Used Pins
 V_KNOB_CLK_PIN = 24
@@ -50,6 +52,9 @@ LCD_OFF = True
 # Other assignments
 SHUNT_RESISTOR_VALUE = 1.2
 
+global defaultPresets
+
+client = mqttClient.Client()
 
 # This is needed because I could not find other way to read two GPIOs at the same time. 
 # pigpio helps and it's daemon has to be started 
@@ -73,6 +78,12 @@ bluePresetStoreQ = Queue(maxsize=5)
 redPresetRecallQ = Queue(maxsize=5) 
 yellowPresetRecallQ = Queue(maxsize=5) 
 bluePresetRecallQ = Queue(maxsize=5) 
+
+# MQTT remote setting and reading
+remoteSetCurrentQ = Queue(maxsize=5) 
+remoteSetVoltageQ = Queue(maxsize=5) 
+
+currentMonQ = Queue(maxsize=5) 
 
 # GPIO Assignments
 GPIO.setmode(GPIO.BCM)
@@ -112,8 +123,31 @@ vKnob.open()
 iKnob = RotaryKnob.rotKnob(clkPin = I_KNOB_CLK_PIN, dtPin = I_KNOB_DT_PIN, countMin = 0, countMax = 999, highSpeedThrs = 15, highSpeedStep = 100)
 iKnob.open()
 
-#default presets used only for the first time
-defaultPresets = [500,250,330,200,1200,500]
+
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code "+str(rc))
+    client.subscribe("PythonPowerSupply/vSet")
+    client.subscribe("PythonPowerSupply/iSet")
+    client.subscribe("PythonPowerSupply/preset")
+    
+def on_message(client, userdata, msg):
+    
+    if(msg.topic == "PythonPowerSupply/preset"):
+        if(msg.payload == "Red"):
+            redPresetRecallQ.put(True)
+        if(msg.payload == "Yellow"):
+            yellowPresetRecallQ.put(True)  
+        if(msg.payload == "Blue"):
+            bluePresetRecallQ.put(True)  
+    
+    if(msg.topic == "PythonPowerSupply/iSet"):
+        print(msg.topic+" "+str(msg.payload))
+        remoteSetCurrentQ.put(msg.payload)
+        
+    if(msg.topic == "PythonPowerSupply/vSet"):
+        print(msg.topic+" "+str(msg.payload))
+        remoteSetVoltageQ.put(msg.payload)
+
 
 def loop_knob(defaultPresets, viPresets):
     
@@ -124,6 +158,14 @@ def loop_knob(defaultPresets, viPresets):
         yellowPresetRecallStat = yellowPresetRecallQ.get()
         bluePresetRecallStat = bluePresetRecallQ.get()
         
+        if(remoteSetVoltageQ.empty() != True):
+            remoteSetVoltage = remoteSetVoltageQ.get()
+            vKnob.InitialiseCounter(int(remoteSetVoltage))
+        
+        if(remoteSetCurrentQ.empty() != True):
+            remoteSetCurrent = remoteSetCurrentQ.get()
+            iKnob.InitialiseCounter(int(remoteSetCurrent))
+            
         if(redPresetRecallStat == True):
             vKnob.InitialiseCounter(viPresets[RED_PRESET_V])
             iKnob.InitialiseCounter(viPresets[RED_PRESET_I])
@@ -195,6 +237,7 @@ def loop_spi(defaultPresets, viPresets):
             iMonVoltage = int(adc.read_adcMilliVolts(ADC_CH_IMON)/SHUNT_RESISTOR_VALUE)
             iMonVoltage += actVoltage*6.5/100
             iMonVoltage = int(math.ceil(iMonVoltage / 5.0)) * 5
+            currentMonQ.put(iMonVoltage)
             
             #Reset limiting conditions, either the knobs are turned or the currentConsumption falls below the limit            
             if(((limVoltage != newVoltage) or (limCurrent != newCurrent) or (iMonVoltage - limCurrent < 5)) and (currentLimOn == True)):                
@@ -296,8 +339,28 @@ def loop_Buttons():
             lastTimeSet = time.time()
 #def loop_Buttons
 
+
+def loop_MqttReceive():
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.connect("test.mosquitto.org", 1883, 60)
+    client.loop_forever()
+
+#def loop_MqttReceive
+
+
+def loop_MqttSend():
+    while(1):
+        mqttPublish.single("PythonPowerSupply/iMon", currentMonQ.get(), hostname="test.mosquitto.org")
+        time.sleep(0.05)
+
+#def loop_MqttReceive
+
+
 try:
-    global defaultPresets
+    defaultPresets = [500,250,330,200,1200,500]
+    
+    
     
     #Check presets file and if it does not exist create it with the defaults
     isPresetFilePresent = os.path.isfile('PPS_Presets.csv')
@@ -320,14 +383,22 @@ try:
     knobMng = Process(target=loop_knob, args=(defaultPresets, viPresets))
     spiMng = Process(target=loop_spi, args=(defaultPresets, viPresets))
     buttonsMng = Process(target=loop_Buttons)
-
+    mqttRcvMng = Process(target=loop_MqttReceive)
+    mqttXmitMng = Process(target = loop_MqttSend)
+    
     knobMng.start()
     spiMng.start()
     buttonsMng.start()
-
+    mqttRcvMng.start()
+    mqttXmitMng.start()
+    
     knobMng.join()
     spiMng.join()
     buttonsMng.join()
+    mqttRcvMng.join()
+    mqttXmitMng.join()
+     
+
     
 except KeyboardInterrupt: # Ctrl+C pressed, so
     print("Shutting Down!!!!!!!!!!!")
@@ -340,8 +411,6 @@ except KeyboardInterrupt: # Ctrl+C pressed, so
   
     
 #end try
-
-
 
 
 
