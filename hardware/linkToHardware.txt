@@ -1,1 +1,2 @@
+Moved to Circuit Maker. The Eagle files here are outdated
 https://circuitmaker.com/Projects/Details/GunerErdogan/pythonPowerSupply
