@@ -5,7 +5,7 @@ from RPi import GPIO
 import MIDAS_LCD
 import RotaryKnob
 from spiDevExp import spiExpanded
-from multiprocessing import Process, Queue, Array
+from multiprocessing import Process, Queue, Array, Value, Pipe
 from mcp4821DAC import mcp4821
 from mcp3008ADC import mcp3008
 import pushButton
@@ -50,12 +50,15 @@ WHITE_PRESET_V = 6
 WHITE_PRESET_I = 7
 LAST_PRESET = 8
 
+
 # LCD ON/OFF Pin Value assignments
 LCD_ON = False
 LCD_OFF = True
 
 # Other assignments
 SHUNT_RESISTOR_VALUE = 1.2
+
+SHOW_REAL_VOLTAGE = True
 
 global defaultPresets
 
@@ -65,10 +68,13 @@ client = mqttClient.Client()
 # pigpio helps and it's daemon has to be started 
 system("sudo pigpiod")
 
-# This is needed to interprocess communication, queue size is not experimented.
+# This is needed to interprocess communication, queue didn't work well shared value is better for this
 # This is Voltage and Current settings filled by the knobs and consumed by the SPI loop
-voltageQ = Queue(maxsize=20) 
-currentQ = Queue(maxsize=20) 
+knobVoltageSet = Value('i')
+knobCurrentSet = Value('i')
+
+# Selected Pipe for the MQTT communication. Queue didn't work because of the type
+mqttIn, mqttOut = Pipe()
 
 # These are Presets' Store commands' queues
 # Store Queue is filled in by buttons loop i.e. process. True when a long press is performed, False otherwise
@@ -122,26 +128,27 @@ spiIDac = spiExpanded(1, mode = 0)
 iDAC = mcp4821(spiIDac)
 
 # Call knob Class and create Voltage and Current Knobs
-vKnob = RotaryKnob.rotKnob(clkPin = V_KNOB_CLK_PIN, dtPin = V_KNOB_DT_PIN, countMin = 0, countMax = 1200, clickStep = 5, highSpeedThrs = 15, highSpeedStep = 100)
+vKnob = RotaryKnob.rotKnob(clkPin = V_KNOB_CLK_PIN, dtPin = V_KNOB_DT_PIN, countMin = 0, countMax = 1200, clickStep = 5, highSpeedThrs = 50, highSpeedStep = 100)
 vKnob.open()
-iKnob = RotaryKnob.rotKnob(clkPin = I_KNOB_CLK_PIN, dtPin = I_KNOB_DT_PIN, countMin = 0, countMax = 990, clickStep = 10, highSpeedThrs = 15, highSpeedStep = 100)
+iKnob = RotaryKnob.rotKnob(clkPin = I_KNOB_CLK_PIN, dtPin = I_KNOB_DT_PIN, countMin = 0, countMax = 990, clickStep = 10, highSpeedThrs = 50, highSpeedStep = 100)
 iKnob.open()
 
 log = logging.getLogger()
-
 console = logging.StreamHandler()
 format_str = '%(asctime)s\t%(levelname)s -- %(processName)s %(filename)s:%(lineno)s -- %(message)s'
 console.setFormatter(logging.Formatter(format_str))
 
 log.addHandler(console) # writes to console.
 log.setLevel(logging.CRITICAL)
+#log.setLevel(logging.DEBUG)
 log.debug('Log Level: DEBUG!')
 
 
 def lcdLine(heading, voltage, current):
     tempOutput = heading + " "
-    tempOutput += "%.2fV %dmA" % (voltage/100.0, current)
+    tempOutput += "%.2fV %dmA" % (voltage, current)
     return tempOutput
+
 
 def on_connect(client, userdata, flags, rc):
     log.debug('Connected with result code %s', str(rc))
@@ -149,6 +156,7 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("PythonPowerSupply/iSet")
     client.subscribe("PythonPowerSupply/preset")
     
+
 def on_message(client, userdata, msg):
     
     if(msg.topic == "PythonPowerSupply/preset"):
@@ -174,27 +182,29 @@ def on_message(client, userdata, msg):
         remoteSetVoltageQ.put(msg.payload)
 
 def mqttPub(topic, payload):
-    mqttPublish.single("PythonPowerSupply/"+topic, payload, hostname="test.mosquitto.org")
+    #log.debug("Sending %s from mqtt pipe value is %s", topic, str(payload))
+    mqttIn.send([topic, str(payload)])   
+   
 # def mqttPublish
 
 def loop_knob(defaultPresets, viPresets):
     
-    mqttPub("presetReturn", "N/A")
+    mqttPub("presetReturn", "Select")
     
     while 1:
         # Check if a preset is requested first if yes let the knobs know the current counter
-        
         # initialiseCounter() is needed so that the knobs know where they should start when they are turned
-        
         # Check if a remote command is received
+        # Knob is a fast device and thus this process should not be crowded
+        
         if(remoteSetVoltageQ.empty() != True):
-            mqttPub("presetReturn", "N/A")
+            mqttPub("presetReturn", "Select")
             remoteSetVoltage = remoteSetVoltageQ.get()
             remoteSetVoltage = float(remoteSetVoltage)*100.0
             vKnob.InitialiseCounter(int(remoteSetVoltage))
         
         if(remoteSetCurrentQ.empty() != True):
-            mqttPub("presetReturn", "N/A")
+            mqttPub("presetReturn", "Select")
             remoteSetCurrent = remoteSetCurrentQ.get()
             iKnob.InitialiseCounter(int(remoteSetCurrent))
         
@@ -218,13 +228,11 @@ def loop_knob(defaultPresets, viPresets):
                 vKnob.InitialiseCounter(viPresets[WHITE_PRESET_V])
                 iKnob.InitialiseCounter(viPresets[WHITE_PRESET_I])
                 mqttPub("presetReturn", "White")
-                
-        if((vKnob.isKnobMove() == True) or (iKnob.isKnobMove() == True)):
-            mqttPub("presetReturn", "N/A")
         
         #get the voltage and current settings from the knobs
-        voltageQ.put(vKnob.updateKnob())        
-        currentQ.put(iKnob.updateKnob())
+        knobCurrentSet.value = iKnob.updateKnob()
+        knobVoltageSet.value = vKnob.updateKnob()
+        
 #def loop_knob
 
 
@@ -233,18 +241,14 @@ def loop_spi(defaultPresets, viPresets):
     #This is the main loop, it is critical and needs better tuning for user interface
     
     newVoltage = 0
-    #lastSavedVoltage = 1
     newCurrent = 0
     limVoltage = 0
     limCurrent = 0
-    #lastSavedCurrent = 1
-    
+    ActVoltageList = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+    ActCurrentList = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
     lastTimeSet = 0
-    #lastTimeOut = 0
-    #numOfSmaples = 0
+    lastTimeSetPreset = 0
     currentLimOn = False
-    #isVoltageErrorOn = False
-    actVoltage = 0
     presetStoreStat = 0
     presetChanged = False
 
@@ -257,24 +261,34 @@ def loop_spi(defaultPresets, viPresets):
     #Turn On LCD
     GPIO.output(LCD_ON_OFF_PIN, LCD_ON)
     time.sleep(0.5)
-    lcd.lcdWriteLoc("SET ", 0, 0)
     actLimCurrent = 0
     prevVoltage = -1
     prevCurrent = -1
+    actVoltage = 0.0
+    accuActVoltage = 0.0
+    meanActVoltage = 0.0
+    indexVoltageSample = 0
+    updateImmediate = False    
+    
     while 1:        
         #update data so that we can command the devices
-        newVoltage = voltageQ.get()
-        newCurrent = currentQ.get()
-        
          
         currentTime = time.time()        
         # The interval selected here is kind of tuned so that the display and knob turning makes better sense to the user.
         # But unfortunately I am not totally satisfied. The knobs miss some steps and think the knobs are turning to the other direction. 
         # There are lots of components here including the caps and voltage dividers used with the knobs.
         
-        if(currentTime - lastTimeSet > 0.02):
+        if(currentTime - lastTimeSet > 0.01):
+            
+            actVoltage = adc.read_adcMilliVolts(ADC_CH_VSENS)/100.0
+            actCurrent = int(adc.read_adcMilliVolts(ADC_CH_IMON)/SHUNT_RESISTOR_VALUE)
+            
+            #get shared values. Queue didn't work so well
+            newVoltage = knobVoltageSet.value/100.0
+            newCurrent = knobCurrentSet.value
             
             
+            #in order not to block the process check the queue if there is a request
             if(presetStoreQ.empty() != True):
                 log.debug('Store Q not empty')
                 presetStoreStat = presetStoreQ.get()
@@ -283,24 +297,47 @@ def loop_spi(defaultPresets, viPresets):
             
             # checking if the voltage is changed and commanding the DAC if there is a change keep the bus free 
             if(newVoltage != prevVoltage):
-                vDAC.setVoltage(newVoltage)
-                mqttPub("vSetReturn", newVoltage/100.0)
-                lcd.lcdWriteLoc("%.2fV %dmA" % (newVoltage/100.0, newCurrent), 0, 4, 12)
+                vDAC.setVoltage(int(newVoltage*100.0))
+                lcd.lcdWriteLoc(lcdLine("SET", newVoltage, newCurrent), 0, 0, 16)                
+                mqttPub("vSetReturn", newVoltage)
                 prevVoltage = newVoltage
+                updateImmediate = True  
                 
             if(newCurrent != prevCurrent):                
                 iDAC.setVoltage(newCurrent)
+                lcd.lcdWriteLoc(lcdLine("SET", newVoltage, newCurrent), 0, 0, 16)
                 mqttPub("iSetReturn", newCurrent)
-                lcd.lcdWriteLoc("%.2fV %dmA" % (newVoltage/100.0, newCurrent), 0, 4, 12)
                 prevCurrent = newCurrent
             
+            # Calculate the mean value of the output measurements.
+            # Depends on how frequent this loop is running. it may not be always 10 if you change the rate
+            if(indexVoltageSample == 10):
+                mqttPub("iMon", actCurrent)
+                mqttPub("vMon", meanActVoltage)
+                indexVoltageSample = 0
+            else:
+                ActVoltageList[indexVoltageSample] = actVoltage
+                ActCurrentList[indexVoltageSample] = actCurrent
+                indexVoltageSample += 1
             
-            actVoltage = adc.read_adcMilliVolts(ADC_CH_VSENS)
-            voltageMonQ.put(actVoltage)
-            # The calculation here is because of some current is stolen by the circuit and the bad tolerance of the shunt resistor.
-            actCurrent = int(adc.read_adcMilliVolts(ADC_CH_IMON)/SHUNT_RESISTOR_VALUE)
-            currentMonQ.put(actCurrent)
-                        
+            if(updateImmediate == True):
+                for i in range(10):
+                    ActVoltageList[i] = newVoltage  
+                updateImmediate = False
+                    
+                
+            accuActVoltage = 0
+            accuActCurrent = 0
+            for i in range(10):
+                accuActVoltage += ActVoltageList[i]   
+                accuActCurrent += ActCurrentList[i]  
+            
+            
+
+            meanActVoltage = accuActVoltage / 10.0  
+            meanActCurrent = accuActCurrent / 10.0 
+            # Mean value calc finish always use the last 10 samples
+            
             #Reset limiting conditions, either the knobs are turned or the currentConsumption falls less than the limit            
             if(((limVoltage != newVoltage) or (limCurrent != newCurrent) or (actLimCurrent - actCurrent > 10)) and (currentLimOn == True)):                
                 log.debug('limVoltage=%d, newVoltage=%d, limCurrent=%d, newCurrent=%d, actCurrent=%d, currentLimOn=%d',limVoltage, newVoltage,limCurrent,newCurrent, actCurrent,currentLimOn) 
@@ -336,18 +373,22 @@ def loop_spi(defaultPresets, viPresets):
                 presetChanged = True
             else:
                 #Normal or ERR or LIM displays
-                if(actVoltage - newVoltage > 200):
+                if(meanActVoltage - newVoltage > 200):
                     # The Normal dipslay shows the set voltage at the out row. This is to improve usability 
                     # To not to mislead the user if the set voltage and actual voltage goes above 200 mV this will be indicated 
                     # Voltage Error Display
-                    lcd.lcdWriteLoc("ERR %.2fV %dmA" % ((actVoltage)/100.0, actCurrent), 1, 0, 16)
+                    lcd.lcdWriteLoc(lcdLine("ERR", meanActVoltage, actCurrent), 1, 0, 16)
                 else:
                     if(currentLimOn == True):
                         # Current Limit Display
-                        lcd.lcdWriteLoc("LIM %.2fV %dmA" % ((actVoltage)/100.0, actCurrent), 1, 0, 16)
+                        lcd.lcdWriteLoc(lcdLine("LIM", meanActVoltage, meanActCurrent), 1, 0, 16)
                     else:
                         # Normal Display
-                        lcd.lcdWriteLoc("OUT %.2fV %dmA" % ((newVoltage)/100.0, actCurrent), 1, 0, 16)
+                        if(SHOW_REAL_VOLTAGE == True):
+                            #log.debug(lcdLine("OUT", meanActVoltage, actCurrent))
+                            lcd.lcdWriteLoc(lcdLine("OUT", meanActVoltage, actCurrent), 1, 0, 16)
+                        else:
+                            lcd.lcdWriteLoc(lcdLine("OUT", newVoltage, actCurrent), 1, 0, 16)
                 lastTimeSet = time.time() 
             
             #If a preset is stored store is in the csv file and show it on screen
@@ -359,6 +400,14 @@ def loop_spi(defaultPresets, viPresets):
                 lcd.lcdWriteLoc("PRESET SAVED", 1, 0, 16)
                 presetChanged = False
                 time.sleep(2)
+            
+            #this is needed for the phone app to go back to select mode regardless what is happening
+            if(time.time() - lastTimeSetPreset > 1):
+                mqttPub("presetReturn", "Select")
+                lastTimeSetPreset = time.time()
+            
+            
+               
 #def loop_spi()
 
 
@@ -405,7 +454,7 @@ def loop_Buttons():
 #def loop_Buttons
 
 
-def loop_MqttReceive():
+def loop_Mqtt():
     client.on_connect = on_connect
     client.on_message = on_message
     client.connect("test.mosquitto.org", 1883, 60)
@@ -416,9 +465,10 @@ def loop_MqttReceive():
 
 def loop_MqttSend():
     while(1):
-        mqttPub("iMon", currentMonQ.get())
-        mqttPub("vMon", voltageMonQ.get()/100.0)
-        time.sleep(0.05)
+        
+        tempMqttData = mqttOut.recv()
+        #log.debug("Received %s from mqtt pipe value is %s", tempMqttData[0], tempMqttData[1])
+        mqttPublish.single("PythonPowerSupply/"+tempMqttData[0], tempMqttData[1], hostname="test.mosquitto.org")
 
 #def loop_MqttReceive
 
@@ -448,19 +498,19 @@ try:
     knobMng = Process(target=loop_knob, args=(defaultPresets, viPresets))
     spiMng = Process(target=loop_spi, args=(defaultPresets, viPresets))
     buttonsMng = Process(target=loop_Buttons)
-    mqttRcvMng = Process(target=loop_MqttReceive)
+    mqttMng = Process(target=loop_Mqtt)
     mqttXmitMng = Process(target = loop_MqttSend)
     
+    mqttMng.start()
     knobMng.start()
     spiMng.start()
     buttonsMng.start()
-    mqttRcvMng.start()
     mqttXmitMng.start()
     
+    mqttMng.join()
     knobMng.join()
     spiMng.join()
     buttonsMng.join()
-    mqttRcvMng.join()
     mqttXmitMng.join()
      
 
