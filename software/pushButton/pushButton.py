@@ -3,19 +3,24 @@ from RPi import GPIO
 
 PB_RELEASE_LONG_PRESS = 4
 PB_LONG_PRESS = 3
+PB_LOCKED = 5
 PB_PRESS = 1
 PB_RELEASE_SHORT_PRESS = 2
 PB_IDLE = 0
 
+PB_DEBOUNCE_TIME = 0.03
+
 LONG_PRESS_THRESHOLD = 2
 
+BUTTON_PRESSED = 0
+BUTTON_RELAXED = 1
 
 class pushButtonDev(object):
 
 
 
     def __init__(self, gpio):
-        self.pin = gpio
+        self.pin = gpio        
         self.prevState = 0
         self.currState = 0
         self.pressTimeTag = 0
@@ -35,7 +40,7 @@ class pushButtonDev(object):
         if((self.currState == 0) and (self.prevState == 1)):
             #print("Press Detect")
             #DEBOUNCE
-            time.sleep(0.020)
+            time.sleep(PB_DEBOUNCE_TIME)
             self.currState = GPIO.input(self.pin)             
             if(self.currState == 0):            
                 #print("Press Established at %f" % currentTime)
@@ -46,14 +51,16 @@ class pushButtonDev(object):
                 
                 
         #establish press and hold condition
-        if((self.currState == 0) and (self.output == PB_PRESS)):
-            if(self.isFingerOn == True):            
-                self.pressDuration = currentTime - self.pressTimeTag        
-                if(self.pressDuration > LONG_PRESS_THRESHOLD) and (self.output == PB_PRESS):
-                    #establish long press condition
-                    self.output = PB_LONG_PRESS
-                    #print("Long Press Established at %f" % currentTime)
-
+        if(self.currState == 0):
+            if(self.output == PB_PRESS):
+                if(self.isFingerOn == True):            
+                    self.pressDuration = currentTime - self.pressTimeTag        
+                    if(self.pressDuration > LONG_PRESS_THRESHOLD) and (self.output == PB_PRESS):
+                        #establish long press condition
+                        self.output = PB_LONG_PRESS
+                        #print("Long Press Established at %f" % currentTime)
+            elif(self.output == PB_LONG_PRESS):
+                self.output = PB_LOCKED
 
         #establish release condition
         if((self.currState == 1) and (self.prevState == 0)):
@@ -64,7 +71,7 @@ class pushButtonDev(object):
                 self.pressDuration = 0
                 self.pressTimeTag = 0
                 
-                if(self.output == PB_LONG_PRESS):
+                if((self.output == PB_LONG_PRESS) or (self.output == PB_LOCKED)):
                     self.output = PB_RELEASE_LONG_PRESS
                 else:
                     self.output = PB_RELEASE_SHORT_PRESS    

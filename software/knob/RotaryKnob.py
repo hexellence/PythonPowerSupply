@@ -7,7 +7,7 @@ SPEED_MEASUREMENT_WINDOW = 0.5
    
 class rotKnob:
     
-    def __init__(self, clkPin, dtPin, countMin = -10000, countMax = 10000, highSpeedThrs = -1, highSpeedStep = 100):
+    def __init__(self, clkPin, dtPin, countMin = -10000, countMax = 10000, highSpeedThrs = -1, clickStep = 1, highSpeedStep = 100):
         
         # the pins must be in the same bank because we need to read them simultaneously
         assert ((clkPin < 32) and (dtPin < 32) and (clkPin >= 0) and (dtPin >= 0))
@@ -15,8 +15,10 @@ class rotKnob:
         self.clkPin = clkPin
         self.dtPin = dtPin
         self.counter = 0
+        self.prevCounter = 0
         self.firstCount = 0
         self.highSpeedThrs = highSpeedThrs
+        self.clickStep = clickStep
         self.highSpeedStep = highSpeedStep
         self.firstTime = 0
         self.clkState = 0
@@ -64,15 +66,15 @@ class rotKnob:
             
             if(self.dtState != self.clkState):
                 # When clk state have an edge and if dt is following; this is the incerement direction
-                currentStep = 1              
+                currentStep = self.clickStep              
             else:
                 # When clk state have an edge and if dt is leading; this is the decrement direction
-                currentStep = -1
+                currentStep = -1*self.clickStep
             self.clkLastState = self.clkState
             
             # define a window for speed calculation
             if(currentTime > self.firstTime + SPEED_MEASUREMENT_WINDOW):
-                clickSpeed = (self.counter - self.firstCount) / (currentTime - self.firstTime)    
+                clickSpeed = (self.counter - self.firstCount) / (currentTime - self.firstTime) / self.clickStep    
                 self.firstCount = 0
                 self.firstTime = 0.0      
                 #print int(clickSpeed)                
@@ -98,6 +100,13 @@ class rotKnob:
     def InitialiseCounter(self, initialValue):
     
         self.counter = initialValue
-    
+        self.prevCounter = initialValue
     #end def
+    
+    def isKnobMove(self):
+        tempOut = False
+        if(self.counter != self.prevCounter):
+            tempOut = True
+            self.prevCounter = self.counter
+        return tempOut
     
