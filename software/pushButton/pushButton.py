@@ -8,24 +8,33 @@ PB_PRESS = 1
 PB_RELEASE_SHORT_PRESS = 2
 PB_IDLE = 0
 
-PB_DEBOUNCE_TIME = 0.03
+PB_DEBOUNCE_TIME = 0.10 # 100ms
 
-LONG_PRESS_THRESHOLD = 2
+LONG_PRESS_THRESHOLD = 2    # 2 seconds
 
-BUTTON_PRESSED = 0
-BUTTON_RELAXED = 1
+# For pulled up sense pins
+PB_PRESS_PULL_UP_PIN = 0
+PB_RELAX_PULL_UP_PIN = 1
+
+PB_PRESS_PULL_DN_PIN = 1
+PB_RELAX_PULL_DN_PIN = 0
 
 class pushButtonDev(object):
 
-
-
-    def __init__(self, gpio):
+    def __init__(self, gpio, isPulledUp):
         self.pin = gpio        
         self.prevState = 0
         self.currState = 0
         self.pressTimeTag = 0
         self.isFingerOn = False
         self.output = PB_IDLE
+        if(isPulledUp == True):
+            self.BUTTON_RELAXED = PB_RELAX_PULL_UP_PIN
+            self.BUTTON_PRESSED = PB_PRESS_PULL_UP_PIN
+        else:
+            self.BUTTON_RELAXED = PB_RELAX_PULL_DN_PIN
+            self.BUTTON_PRESSED = PB_PRESS_PULL_DN_PIN
+            
     #end def
 
     def read_pushButton(self):
@@ -33,16 +42,16 @@ class pushButtonDev(object):
         #button is active 0
         self.currState = GPIO.input(self.pin) 
         
-        if((self.currState == 1) and (self.prevState == 1)):
+        if((self.currState == self.BUTTON_RELAXED) and (self.prevState == self.BUTTON_RELAXED)):
             self.output = PB_IDLE
         
         #establish press
-        if((self.currState == 0) and (self.prevState == 1)):
+        if((self.currState == self.BUTTON_PRESSED) and (self.prevState == self.BUTTON_RELAXED)):
             #print("Press Detect")
             #DEBOUNCE
             time.sleep(PB_DEBOUNCE_TIME)
             self.currState = GPIO.input(self.pin)             
-            if(self.currState == 0):            
+            if(self.currState == self.BUTTON_PRESSED):            
                 #print("Press Established at %f" % currentTime)
                 self.isFingerOn = True
                 self.pressDuration = 0
@@ -51,7 +60,7 @@ class pushButtonDev(object):
                 
                 
         #establish press and hold condition
-        if(self.currState == 0):
+        if(self.currState == self.BUTTON_PRESSED):
             if(self.output == PB_PRESS):
                 if(self.isFingerOn == True):            
                     self.pressDuration = currentTime - self.pressTimeTag        
@@ -63,9 +72,12 @@ class pushButtonDev(object):
                 self.output = PB_LOCKED
 
         #establish release condition
-        if((self.currState == 1) and (self.prevState == 0)):
+        if((self.currState == self.BUTTON_RELAXED) and (self.prevState == self.BUTTON_PRESSED)):
             #Check press established
-            if((self.currState == 1) and (self.isFingerOn == True)):            
+            #print("Release Detect")
+            #DEBOUNCE
+            time.sleep(PB_DEBOUNCE_TIME)
+            if((self.currState == self.BUTTON_RELAXED) and (self.isFingerOn == True)):            
                 #print("Release Established at %f" % currentTime)
                 self.isFingerOn = False
                 self.pressDuration = 0
